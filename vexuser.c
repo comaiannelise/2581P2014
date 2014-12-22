@@ -1,50 +1,28 @@
-/*-----------------------------------------------------------------------------*/
-/*                                                                             */
-/*                        Copyright (c) James Pearman                          */
-/*                                   2013                                      */
-/*                            All Rights Reserved                              */
-/*                                                                             */
-/*-----------------------------------------------------------------------------*/
-/*                                                                             */
-/*    Module:     vexuser.c                                                    */
-/*    Author:     James Pearman                                                */
-/*    Created:    7 May 2013                                                   */
-/*                                                                             */
-/*    Revisions:                                                               */
-/*                V1.00  04 July 2013 - Initial release                        */
-/*                                                                             */
-/*-----------------------------------------------------------------------------*/
-/*                                                                             */
-/*    The author is supplying this software for use with the VEX cortex        */
-/*    control system. This file can be freely distributed and teams are        */
-/*    authorized to freely use this program , however, it is requested that    */
-/*    improvements or additions be shared with the Vex community via the vex   */
-/*    forum.  Please acknowledge the work of the authors when appropriate.     */
-/*    Thanks.                                                                  */
-/*                                                                             */
-/*    Licensed under the Apache License, Version 2.0 (the "License");          */
-/*    you may not use this file except in compliance with the License.         */
-/*    You may obtain a copy of the License at                                  */
-/*                                                                             */
-/*      http://www.apache.org/licenses/LICENSE-2.0                             */
-/*                                                                             */
-/*    Unless required by applicable law or agreed to in writing, software      */
-/*    distributed under the License is distributed on an "AS IS" BASIS,        */
-/*    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. */
-/*    See the License for the specific language governing permissions and      */
-/*    limitations under the License.                                           */
-/*                                                                             */
-/*    The author can be contacted on the vex forums as jpearman                */
-/*    or electronic mail using jbpearman_at_mac_dot_com                        */
-/*    Mentor for team 8888 RoboLancers, Pasadena CA.                           */
-/*                                                                             */
-/*-----------------------------------------------------------------------------*/
-
+/*******************************************************************************
+ * @mainpage
+ * This is the program for the BCAMSC Robotics Team 2581B 2014 competition
+ * robot.
+ *
+ * @details
+ * This program is the primary file for the BCAMSC Robotics Team 2581B program
+ * for the 2014-2015 school year.
+ *
+ * This program is based on a template by James Pearman in his "C on Vex"
+ * library, V 1.00.
+ *
+ * @author James Pearman
+ * @author Ethan Ruffing <ruffinge@mail.gvsu.edu>
+ *
+ * @since 2014-12-22
+ ******************************************************************************/
 #include <stdlib.h>
 
 #include "ch.h"  		// needs for all ChibiOS programs
 #include "hal.h" 		// hardware abstraction layer header
 #include "vex.h"		// vex library header
+
+#define MOTOR_DRIVE_L     kVexMotor_1
+#define MOTOR_DRIVE_R     kVexMotor_10
 
 // Digi IO configuration
 static  vexDigiCfg  dConfig[kVexDigital_Num] = {
@@ -75,42 +53,35 @@ static  vexMotorCfg mConfig[kVexMotorNum] = {
         { kVexMotor_10,     kVexMotor393T,           kVexMotorNormal,       kVexSensorIME,         kImeChannel_2 }
 };
 
-
-/*-----------------------------------------------------------------------------*/
-/** @brief      User setup                                                     */
-/*-----------------------------------------------------------------------------*/
-/** @details
+/**
+ * @brief User setup
+ * @details
  *  The digital and motor ports can (should) be configured here.
  */
-void
-vexUserSetup()
+void vexUserSetup()
 {
 	vexDigitalConfigure( dConfig, DIG_CONFIG_SIZE( dConfig ) );
 	vexMotorConfigure( mConfig, MOT_CONFIG_SIZE( mConfig ) );
 }
 
-/*-----------------------------------------------------------------------------*/
-/** @brief      User initialize                                                */
-/*-----------------------------------------------------------------------------*/
-/** @details
+/**
+ *  @brief User initialize
+ *  @details
  *  This function is called after all setup is complete and communication has
  *  been established with the master processor.
  *  Start other tasks and initialize user variables here
  */
-void
-vexUserInit()
+void vexUserInit()
 {
 
 }
 
-/*-----------------------------------------------------------------------------*/
-/** @brief      Autonomous                                                     */
-/*-----------------------------------------------------------------------------*/
-/** @details
+/**
+ * @brief Autonomous
+ * @details
  *  This thread is started when the autonomous period is started
  */
-msg_t
-vexAutonomous( void *arg )
+msg_t vexAutonomous( void *arg )
 {
     (void)arg;
 
@@ -126,13 +97,10 @@ vexAutonomous( void *arg )
     return (msg_t)0;
 }
 
-#define MotorDriveL     kVexMotor_1
-#define MotorDriveR     kVexMotor_10
-
-/*-----------------------------------------------------------------------------*/
-/** @brief      Driver control                                                 */
-/*-----------------------------------------------------------------------------*/
-/** @details
+/**
+ * @brief Driver Control
+ *
+ * @details
  *  This thread is started when the driver control period is started
  */
 msg_t
@@ -168,6 +136,3 @@ vexOperator( void *arg )
 
 	return (msg_t)0;
 }
-
-
-
