@@ -1,4 +1,9 @@
 /*******************************************************************************
+ * @mainpage
+ * This is the program for the BCAMSC Robotics Team 2581B 2014 competition
+ * robot.
+ *
+ * @details
  * This program is the primary file for the BCAMSC Robotics Team 2581B program
  * for the 2014-2015 school year.
  *
