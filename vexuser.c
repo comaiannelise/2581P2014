@@ -16,6 +16,9 @@
 #include "hal.h" 		// hardware abstraction layer header
 #include "vex.h"		// vex library header
 
+#define MOTOR_DRIVE_L     kVexMotor_1
+#define MOTOR_DRIVE_R     kVexMotor_10
+
 // Digi IO configuration
 static  vexDigiCfg  dConfig[kVexDigital_Num] = {
         { kVexDigital_1,    kVexSensorDigitalOutput, kVexConfigOutput,      0 },
@@ -45,42 +48,35 @@ static  vexMotorCfg mConfig[kVexMotorNum] = {
         { kVexMotor_10,     kVexMotor393T,           kVexMotorNormal,       kVexSensorIME,         kImeChannel_2 }
 };
 
-
-/*-----------------------------------------------------------------------------*/
-/** @brief      User setup                                                     */
-/*-----------------------------------------------------------------------------*/
-/** @details
+/**
+ * @brief User setup
+ * @details
  *  The digital and motor ports can (should) be configured here.
  */
-void
-vexUserSetup()
+void vexUserSetup()
 {
 	vexDigitalConfigure( dConfig, DIG_CONFIG_SIZE( dConfig ) );
 	vexMotorConfigure( mConfig, MOT_CONFIG_SIZE( mConfig ) );
 }
 
-/*-----------------------------------------------------------------------------*/
-/** @brief      User initialize                                                */
-/*-----------------------------------------------------------------------------*/
-/** @details
+/**
+ *  @brief User initialize
+ *  @details
  *  This function is called after all setup is complete and communication has
  *  been established with the master processor.
  *  Start other tasks and initialize user variables here
  */
-void
-vexUserInit()
+void vexUserInit()
 {
 
 }
 
-/*-----------------------------------------------------------------------------*/
-/** @brief      Autonomous                                                     */
-/*-----------------------------------------------------------------------------*/
-/** @details
+/**
+ * @brief Autonomous
+ * @details
  *  This thread is started when the autonomous period is started
  */
-msg_t
-vexAutonomous( void *arg )
+msg_t vexAutonomous( void *arg )
 {
     (void)arg;
 
@@ -96,13 +92,10 @@ vexAutonomous( void *arg )
     return (msg_t)0;
 }
 
-#define MotorDriveL     kVexMotor_1
-#define MotorDriveR     kVexMotor_10
-
-/*-----------------------------------------------------------------------------*/
-/** @brief      Driver control                                                 */
-/*-----------------------------------------------------------------------------*/
-/** @details
+/**
+ * @brief Driver Control
+ *
+ * @details
  *  This thread is started when the driver control period is started
  */
 msg_t
