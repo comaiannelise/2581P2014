@@ -1,45 +1,15 @@
-/*-----------------------------------------------------------------------------*/
-/*                                                                             */
-/*                        Copyright (c) James Pearman                          */
-/*                                   2013                                      */
-/*                            All Rights Reserved                              */
-/*                                                                             */
-/*-----------------------------------------------------------------------------*/
-/*                                                                             */
-/*    Module:     vexuser.c                                                    */
-/*    Author:     James Pearman                                                */
-/*    Created:    7 May 2013                                                   */
-/*                                                                             */
-/*    Revisions:                                                               */
-/*                V1.00  04 July 2013 - Initial release                        */
-/*                                                                             */
-/*-----------------------------------------------------------------------------*/
-/*                                                                             */
-/*    The author is supplying this software for use with the VEX cortex        */
-/*    control system. This file can be freely distributed and teams are        */
-/*    authorized to freely use this program , however, it is requested that    */
-/*    improvements or additions be shared with the Vex community via the vex   */
-/*    forum.  Please acknowledge the work of the authors when appropriate.     */
-/*    Thanks.                                                                  */
-/*                                                                             */
-/*    Licensed under the Apache License, Version 2.0 (the "License");          */
-/*    you may not use this file except in compliance with the License.         */
-/*    You may obtain a copy of the License at                                  */
-/*                                                                             */
-/*      http://www.apache.org/licenses/LICENSE-2.0                             */
-/*                                                                             */
-/*    Unless required by applicable law or agreed to in writing, software      */
-/*    distributed under the License is distributed on an "AS IS" BASIS,        */
-/*    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. */
-/*    See the License for the specific language governing permissions and      */
-/*    limitations under the License.                                           */
-/*                                                                             */
-/*    The author can be contacted on the vex forums as jpearman                */
-/*    or electronic mail using jbpearman_at_mac_dot_com                        */
-/*    Mentor for team 8888 RoboLancers, Pasadena CA.                           */
-/*                                                                             */
-/*-----------------------------------------------------------------------------*/
-
+/*******************************************************************************
+ * This program is the primary file for the BCAMSC Robotics Team 2581B program
+ * for the 2014-2015 school year.
+ *
+ * This program is based on a template by James Pearman in his "C on Vex"
+ * library, V 1.00.
+ *
+ * @author James Pearman
+ * @author Ethan Ruffing <ruffinge@mail.gvsu.edu>
+ *
+ * @since 2014-12-22
+ ******************************************************************************/
 #include <stdlib.h>
 
 #include "ch.h"  		// needs for all ChibiOS programs
@@ -168,6 +138,3 @@ vexOperator( void *arg )
 
 	return (msg_t)0;
 }
-
-
-
