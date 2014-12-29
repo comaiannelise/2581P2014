@@ -11,6 +11,7 @@
  * library, V 1.00.
  *
  * @author James Pearman
+ * @author Michel Momeyer <strihawk1213@gmail.com>
  * @author Ethan Ruffing <ruffinge@mail.gvsu.edu>
  *
  * @since 2014-12-22
