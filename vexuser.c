@@ -17,6 +17,7 @@
  * @since 2014-12-22
  ******************************************************************************/
 #include <stdlib.h>
+#include <math.h>
 
 #include "ch.h"  		// needs for all ChibiOS programs
 #include "hal.h" 		// hardware abstraction layer header
