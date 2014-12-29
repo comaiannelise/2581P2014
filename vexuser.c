@@ -22,7 +22,9 @@
 #include "hal.h" 		// hardware abstraction layer header
 #include "vex.h"		// vex library header
 #include "vexuser.h"    // function declarations
-
+#include "apollo.h"     // the library that includes the apollo debug window in screen
+#include "smartmotor.h" // the library for smart motors
+ 
 //Motors Declaration
 
 #define BASE_NW  kVexMotor_2  //Front Left Drive Motor

@@ -12,4 +12,3 @@ VEXUSERSRC = vexuser.c
 
 # Uncomment and add/modify user include files
 #VEXUSERINC = myfile.h
-VEXUSERINC = vexuser.h
