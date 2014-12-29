@@ -21,6 +21,7 @@
 #include "ch.h"  		// needs for all ChibiOS programs
 #include "hal.h" 		// hardware abstraction layer header
 #include "vex.h"		// vex library header
+#include "vexuser.h"    // function declarations
 
 //Motors Declaration
 
