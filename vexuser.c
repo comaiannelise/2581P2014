@@ -41,7 +41,7 @@
 
 //Other Preprocessor Declaration
 
- #define PI 3.14159265359
+ #define PI (3.14159265359)
 
 // Digi IO configuration
 static  vexDigiCfg  dConfig[kVexDigital_Num] = {
