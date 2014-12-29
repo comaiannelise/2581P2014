@@ -21,19 +21,25 @@
 #include "hal.h" 		// hardware abstraction layer header
 #include "vex.h"		// vex library header
 
-#define motClaw          kVexMotor_6
-#define motMotor          kVexMotor_2
-#define motLiftOne      kVexMotor_3
-#define motLiftTwo    kVexMotor_4
-#define motLiftThree      kVexMotor_5
-#define motLiftFour      kVexMotor_1
-#define motForeArm        kVexMotor_7
-#define motRotateOne      kVexMotor_9
-#define motRotateTwo      kVexMotor_10
+#define motBackRight         kVexMotor_1
+#define motFrontRight        kVexMotor_2
+#define motLiftOne           kVexMotor_3
+#define motLiftTwo           kVexMotor_4
+#define motLiftThree         kVexMotor_5
+#define motLiftFour          kVexMotor_6
+#define motFrontLeft         kVexMotor_7
+#define motBackLeft          kVexMotor_8
+#define motRotateOne         kVexMotor_9
+#define motRotateTwo         kVexMotor_10
 
 #define firstJumper		  kVexDigital_1
 #define secondJumper	  kVexDigital_2
 #define tenthJumper		  kVexDigital_10
+
+ #define PI  3.14
+
+
+
 
 // Digi IO configuration
 static  vexDigiCfg  dConfig[kVexDigital_Num] = {
@@ -54,13 +60,13 @@ static  vexDigiCfg  dConfig[kVexDigital_Num] = {
 
 static  vexMotorCfg mConfig[kVexMotorNum] = {
         { kVexMotor_1,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_3 },
-        { kVexMotor_2,      kVexMotor269,            kVexMotorNormal,       kVexSensorNone,        0 },
+        { kVexMotor_2,      kVexMotor393T,            kVexMotorNormal,       kVexSensorNone,        0 },
         { kVexMotor_3,      kVexMotor393T,           kVexMotorNormal,     kVexSensorIME,         kImeChannel_1 },
         { kVexMotor_4,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
         { kVexMotor_5,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_2 },
-        { kVexMotor_6,      kVexMotor269,            kVexMotorReversed,       kVexSensorNone,        0 },
+        { kVexMotor_6,      kVexMotor393T,            kVexMotorReversed,       kVexSensorNone,        0 },
         { kVexMotor_7,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_8,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
+        { kVexMotor_8,      kVexMotor393T,      kVexMotorNormal,       kVexSensorNone,        0 },
         { kVexMotor_9,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_4 },
         { kVexMotor_10,     kVexMotor393T,      	 kVexMotorNormal,       kVexSensorNone,        0 },
 };
@@ -95,7 +101,7 @@ void moveFunc(int ch1, int ch2, int ch4)
 /*
  *This stops all motors on the robot. 
  *@since 2014-12-21
- */
+ 
 void stopMotors(void)	
 {
 	vexMotorSet(motClaw, 0);
@@ -108,7 +114,7 @@ void stopMotors(void)
 	vexMotorSet(motBackRight, 0);
 	vexMotorSet(motBackLeft, 0);
 }
-
+*/c
 /*
  *This controls the extension and retraction of our arm. 
  *
@@ -140,6 +146,8 @@ extenderControl(int extend,int retract)
  *@param[in] close
  *	Closes the claw when button is pressed
  */
+
+ /*
 void clawControl(int open,int close)
 {
  if(open == 1)
@@ -155,6 +163,7 @@ else {
 	}
 wait(100);
 }
+*/
 
 /*
  *This function controls the extending  and retracting  of the foot.
@@ -314,23 +323,23 @@ void pointTurnRight(void)
 /*
  *This opens the claw when called. 
  *@since 2014-12-21
- */
+ 
 void openClaw(void)	
 {
 	vexMotorSet(motClaw, 63);
 	wait(100);
 }
-
+*/
 /*
  *This closes the claw when called. 
  *@since 2014-12-21
- */
+ 
 void closeClaw(void)	
 {
 	vexMotorSet(motClaw, -63);
 	wait(100);
 }
-	
+	*/
 /*
  *This untested function was for raising the first arm we built.  With the new chain lift, this function becomes irrelephant.
  *
@@ -342,6 +351,7 @@ void closeClaw(void)
  *@param[in] current
  *	This is a variable; it has a value.
  */
+ /*
 void raiseArm(int position, int current) 
 {
 	if((position == 2) && (current == 0))	
@@ -381,7 +391,7 @@ void raiseArm(int position, int current)
 	}
 
 	vexMotorPositionSet(motRotateTwo, 0);
-}
+}*/
 
 /*
  *This function was for the lowering of the first arm we built.  With the chain lift, this function becomes irrelevant.
@@ -472,7 +482,8 @@ vexOperator( void *arg )
 	// Run until asked to terminate
 	while(!chThdShouldTerminate())
 		{
-		precision = 1 - vexControllerGet(Btn6U) * 0.25 - vexControllerGet(Btn6D) * 0.5;
+
+		int precision = 1 - vexControllerGet(Btn6U) * 0.25 - vexControllerGet(Btn6D) * 0.5;
 		
 
 		//Modifies drive base speed if certain buttons are pressed. Allows for more pewcise movement
@@ -482,11 +493,12 @@ vexOperator( void *arg )
 		//Other Movement
 		extenderControl(vexControllerGet(Btn5U),	//Extends the arm
 						vexControllerGet(Btn5D)	);	//Retracts the arm
-		clawControl(	vexControllerGet(Btn7R),	//Opens the claw
+		/*
+        clawControl(	vexControllerGet(Btn7R),	//Opens the claw
 						vexControllerGet(Btn7L)	);	//Closes the claw
 		footControl(	vexControllerGet(Btn8L),	//Extends the foot
 						vexControllerGet(Btn8R) );	//Retracts the foot
-
+        */
 
 		// Don't hog cpu
 		vexSleep( 25 );
