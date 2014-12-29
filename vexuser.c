@@ -21,15 +21,15 @@
 #include "hal.h" 		// hardware abstraction layer header
 #include "vex.h"		// vex library header
 
-#define motBackRight      kVexMotor_1
-#define motClaw           kVexMotor_2
-#define motBackLeft       kVexMotor_3
-#define motFrontRight     kVexMotor_4
-#define motFrontLeft      kVexMotor_5
-#define motExtender       kVexMotor_6
+#define motClaw          kVexMotor_6
+#define motMotor          kVexMotor_2
+#define motLiftOne      kVexMotor_3
+#define motLiftTwo    kVexMotor_4
+#define motLiftThree      kVexMotor_5
+#define motLiftFour      kVexMotor_1
 #define motForeArm        kVexMotor_7
-#define motRotateOne      kVexMotor_10
-#define motRotateTwo      kVexMotor_9
+#define motRotateOne      kVexMotor_9
+#define motRotateTwo      kVexMotor_10
 
 #define firstJumper		  kVexDigital_1
 #define secondJumper	  kVexDigital_2
@@ -55,10 +55,10 @@ static  vexDigiCfg  dConfig[kVexDigital_Num] = {
 static  vexMotorCfg mConfig[kVexMotorNum] = {
         { kVexMotor_1,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_3 },
         { kVexMotor_2,      kVexMotor269,            kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_3,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_1 },
+        { kVexMotor_3,      kVexMotor393T,           kVexMotorNormal,     kVexSensorIME,         kImeChannel_1 },
         { kVexMotor_4,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
         { kVexMotor_5,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_2 },
-        { kVexMotor_6,      kVexMotor269,            kVexMotorNormal,       kVexSensorNone,        0 },
+        { kVexMotor_6,      kVexMotor269,            kVexMotorReversed,       kVexSensorNone,        0 },
         { kVexMotor_7,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
         { kVexMotor_8,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
         { kVexMotor_9,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_4 },
@@ -123,7 +123,10 @@ void stopMotors(void)
 void
 extenderControl(int extend,int retract)
 {
-	vexMotorSet(motExtender, 96 * (extend - retract));
+	vexMotorSet(motLiftOne, 96 * (extend - retract));
+    vexMotorSet(motLiftTwo, 96 * (extend - retract));
+    vexMotorSet(motLiftThree, 96 * (extend - retract));
+    vexMotorSet(motLiftFour, 96 * (extend - retract));
 }
 
 /*
