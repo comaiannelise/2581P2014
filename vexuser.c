@@ -161,7 +161,7 @@ msg_t vexOperator( void *arg )
  * This function determines and returns an acceptable increment to the given 
  *     power level based on user input.
  */
-int getPowerIncrement(int input, int oldValue, int deadZone, int maxAcceleration)
+int getPowerIncrement(int oldValue, int input, int deadZone, int maxAcceleration)
 {
     if(input > deadZone || input < -deadZone)
     {

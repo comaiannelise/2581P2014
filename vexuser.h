@@ -20,7 +20,7 @@
  * @return 
  *     the acceptable change to the given power level
  */
-int getPowerIncrement(int input, int oldValue, int deadZone, int maxAcceleration);
+int getPowerIncrement(int oldValue, int input, int deadZone, int maxAcceleration);
 
 /**
  * This function takes the controller input and modify values for use
