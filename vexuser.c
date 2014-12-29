@@ -24,6 +24,7 @@
 #include "vexuser.h"    // function declarations
 #include "apollo.h"     // the library that includes the apollo debug window in screen
 #include "smartmotor.h" // the library for smart motors
+
 //Motors Declaration
 
 #define BASE_NW  kVexMotor_2  //Front Left Drive Motor
@@ -36,6 +37,10 @@
 
 #define SHUTTLE  kVexMotor_5  //controls claw shuttle
 #define CLAW     kVexMotor_6  //actuates claw
+
+//Other Preprocessor Declaration
+
+ #define PI 3.14159265359
 
 // Digi IO configuration
 static  vexDigiCfg  dConfig[kVexDigital_Num] = {
