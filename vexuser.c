@@ -67,6 +67,15 @@ static  vexMotorCfg mConfig[kVexMotorNum] = {
         { kVexMotor_10, kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_2 }
 };
 
+// Input Variables
+
+int vertical;
+int horizontal;
+int spin;
+int liftSpeed;
+int clawPosition;
+int shuttleSpeed;
+
 /**
  * @brief User setup
  * @details
