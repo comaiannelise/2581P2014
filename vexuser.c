@@ -158,8 +158,8 @@ msg_t vexOperator( void *arg )
 }
 
 /**
- * This function determines and returns an acceptable change to the given power level based
- *     base on user input.
+ * This function determines and returns an acceptable increment to the given 
+ *     power level based on user input.
  * 
  * @author Liam Bohl <liambohl@gmail.com>
  * @author Michel Momeyer <strihawk1213@gmail.com>
@@ -176,7 +176,7 @@ msg_t vexOperator( void *arg )
  * @return 
  *     the acceptable change to the given power level
  */
-int getDeltaPower(int input, int oldValue, int deadZone, int maxAcceleration)
+int getPowerIncrement(int input, int oldValue, int deadZone, int maxAcceleration)
 {
     if(input > deadZone || input < -deadZone)
     {
