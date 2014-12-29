@@ -156,3 +156,39 @@ msg_t vexOperator( void *arg )
 
 	return (msg_t)0;
 }
+
+/**
+ * This function determines and returns an acceptable change to the given power level based
+ *     base on user input.
+ * 
+ * @author Liam Bohl <liambohl@gmail.com>
+ * @author Michel Momeyer <strihawk1213@gmail.com>
+ * @since 2014-12-29
+ *
+ * @param oldValue[in]
+ *     the current value to be changed
+ * @param channelInput[in]
+ *     the user input from the controller
+ * @param deadZone[in]
+ *     the minimum input threshold that must be reached before changes are considered
+ * @param maxAcceleration[in]
+ *     the maximum change in power that can be added at an instant
+ * @return 
+ *     the acceptable change to the given power level
+ */
+int getDeltaPower(int input, int oldValue, int deadZone, int maxAcceleration)
+{
+    if(input > deadZone || input < -deadZone)
+    {
+        if(input > oldValue + maxAcceleration) 
+        {
+            return maxAcceleration;
+        }
+        else if(input < oldValue - maxAcceleration) 
+        {
+            return -maxAcceleration;
+        }
+        return input;
+    }
+    return 0;
+}
