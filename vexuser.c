@@ -24,7 +24,6 @@
 #include "vexuser.h"    // function declarations
 #include "apollo.h"     // the library that includes the apollo debug window in screen
 #include "smartmotor.h" // the library for smart motors
- 
 //Motors Declaration
 
 #define BASE_NW  kVexMotor_2  //Front Left Drive Motor
@@ -75,6 +74,16 @@ int spin;
 int liftSpeed;
 int clawPosition;
 int shuttleSpeed;
+
+//Limits and Adjustments
+
+int deadZone = 10;
+
+int maxAVert = 5;
+int maxAHoriz = 1;
+int maxASpin = 3;
+
+float leftLiftAdj = .85;
 
 /**
  * @brief User setup
