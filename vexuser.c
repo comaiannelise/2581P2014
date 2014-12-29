@@ -80,15 +80,13 @@ int liftSpeed;
 int clawPosition;
 int shuttleSpeed;
 
-//Limits and Adjustments
+//Limits and Acceleration djustments
 
 int deadZone = 10;
 
 int maxAVert = 5;
 int maxAHoriz = 1;
 int maxASpin = 3;
-
-float leftLiftAdj = .85;
 
 /**
  * @brief User setup
