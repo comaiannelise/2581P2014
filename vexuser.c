@@ -22,16 +22,29 @@
 #include "hal.h" 		// hardware abstraction layer header
 #include "vex.h"		// vex library header
 
+//Motors Declaration
+
+#define BASE_NW  kVexMotor_2  //Front Left Drive Motor
+#define BASE_NE  kVexMotor_3  //Front Right Drive Motor
+#define BASE_SE  kVexMotor_4  //Back Right Drive Motor
+#define BASE_SW  kVexMotor_1  //Back Left Drive Motor
+
+#define LIFT_1   kVexMotor_8  //Front Left Lift Motor
+#define LIFT_2   kVexMotor_9  //Front Right Lift Motor
+
+#define SHUTTLE  kVexMotor_5  //controls claw shuttle
+#define CLAW     kVexMotor_6  //actuates claw
+
 // Digi IO configuration
 static  vexDigiCfg  dConfig[kVexDigital_Num] = {
-        { kVexDigital_1,    kVexSensorDigitalOutput, kVexConfigOutput,      0 },
-        { kVexDigital_2,    kVexSensorDigitalOutput, kVexConfigOutput,      0 },
-        { kVexDigital_3,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
-        { kVexDigital_4,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
-        { kVexDigital_5,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
-        { kVexDigital_6,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
-        { kVexDigital_7,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
-        { kVexDigital_8,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
+        { kVexDigital_1,    kVexSensorQuadEncoder,   kVexConfigQuadEnc1,    kVexQuadEncoder_1 },
+        { kVexDigital_2,    kVexSensorQuadEncoder,   kVexConfigQuadEnc2,    kVexQuadEncoder_1 },
+        { kVexDigital_3,    kVexSensorQuadEncoder,   kVexConfigQuadEnc1,    kVexQuadEncoder_2 },
+        { kVexDigital_4,    kVexSensorQuadEncoder,   kVexConfigQuadEnc2,    kVexQuadEncoder_2 },
+        { kVexDigital_5,    kVexSensorQuadEncoder,   kVexConfigQuadEnc1,    kVexQuadEncoder_3 },
+        { kVexDigital_6,    kVexSensorQuadEncoder,   kVexConfigQuadEnc2,    kVexQuadEncoder_3 },
+        { kVexDigital_7,    kVexSensorQuadEncoder,   kVexConfigQuadEnc1,    kVexQuadEncoder_4 },
+        { kVexDigital_8,    kVexSensorQuadEncoder,   kVexConfigQuadEnc2,    kVexQuadEncoder_4 },
         { kVexDigital_9,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
         { kVexDigital_10,   kVexSensorDigitalInput,  kVexConfigInput,       0 },
         { kVexDigital_11,   kVexSensorDigitalInput,  kVexConfigInput,       0 },
@@ -39,16 +52,16 @@ static  vexDigiCfg  dConfig[kVexDigital_Num] = {
 };
 
 static  vexMotorCfg mConfig[kVexMotorNum] = {
-        { kVexMotor_1,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_2,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_3,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_4,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_5,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_6,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_7,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_8,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_9,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_10,     kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 }
+        { BASE_SW,      kVexMotor393T,     kVexMotorNormal,       kVexSensorQuadEncoder,        kVexQuadEncoder_4 },
+        { BASE_NW,      kVexMotor393T,     kVexMotorReversed,     kVexSensorQuadEncoder,        kVexQuadEncoder_1 },
+        { BASE_NE,      kVexMotor393T,     kVexMotorNormal,       kVexSensorQuadEncoder,        kVexQuadEncoder_2 },
+        { BASE_SE,      kVexMotor393T,     kVexMotorNormal,       kVexSensorQuadEncoder,        kVexQuadEncoder_3 },
+        { SHUTTLE,      kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_5 },
+        { CLAW,         kVexMotor393T,     kVexMotorNormal,       kVexSensorNone,               0 },
+        { kVexMotor_7,  kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_3 },
+        { LIFT_1,       kVexMotor393T,     kVexMotorReversed,     kVexSensorIME,                kImeChannel_4 },
+        { LIFT_2,       kVexMotor393T,     kVexMotorReversed,     kVexSensorIME,                kImeChannel_1 },
+        { kVexMotor_10, kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_2 }
 };
 
 /**
