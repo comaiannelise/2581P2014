@@ -33,7 +33,7 @@
 #define firstJumper		  kVexDigital_1
 #define secondJumper	  kVexDigital_2
 
- #define PI  3.14
+#define PI  3.14
 
 
 
@@ -115,21 +115,21 @@ void stopMotors(void)
 /*
  *This controls the extension and retraction of the chain lift. 
  *
- *@author Alex Miller <alexmiller965@gmail.com>
- *@since 2014-12-21
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2014-12-29
  *
- *@param[in] extend 
- *	Extends the arm while assigned button is depressed
- *@param[in] retract
- *	Retracts the arm while assigned button is depressed
+ *@param[in] raises 
+ *	Raises the lift while assigned button is pressed
+ *@param[in] lower
+ *	Lowers the lift while assigned button is pressed
  */
 void
-liftControl(int extend,int retract)
+liftControl(int raises,int lower)
 {
-	vexMotorSet(motLiftOne, 96 * (extend - retract));
-    vexMotorSet(motLiftTwo, 96 * (extend - retract));
-    vexMotorSet(motLiftThree, 96 * (extend - retract));
-    vexMotorSet(motLiftFour, 96 * (extend - retract));
+	vexMotorSet(motLiftOne, 96 * (raises - lower));
+    vexMotorSet(motLiftTwo, 96 * (raises - lower));
+    vexMotorSet(motLiftThree, 96 * (raises - lower));
+    vexMotorSet(motLiftFour, 96 * (raises - lower));
 }
 
 /*
