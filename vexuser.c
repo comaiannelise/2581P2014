@@ -145,23 +145,13 @@ liftControl(int raises,int lower)
  *	Closes the claw when button is pressed
  */
 
- /*
+ 
 void clawControl(int open,int close)
 {
- if(open == 1)
- 	{
- 	vexMotorSet(motClaw,127);
-	}
- else if(close == 1)
- 	{
- 	vexMotorSet(motClaw,-127);
-	}
-else {
-	vexMotorSet(motClaw,0);
-	}
-wait(100);
+vexMotorSet(motClaw, 127 * (open - close));
+//wait(100);   //May not need to be here (except possibly for auton) if previous line works
 }
-*/
+
 
 /*
  *This function controls the extending  and retracting  of the foot.
