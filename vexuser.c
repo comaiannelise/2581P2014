@@ -26,15 +26,12 @@
 #define motLiftOne           kVexMotor_3
 #define motLiftTwo           kVexMotor_4
 #define motLiftThree         kVexMotor_5
-#define motLiftFour          kVexMotor_6
-#define motFrontLeft         kVexMotor_7
-#define motBackLeft          kVexMotor_8
-#define motRotateOne         kVexMotor_9
-#define motRotateTwo         kVexMotor_10
+#define motLiftFour          kVexMotor_7
+#define motFrontLeft         kVexMotor_6
+#define motClaw              kVexMotor_7
 
 #define firstJumper		  kVexDigital_1
 #define secondJumper	  kVexDigital_2
-#define tenthJumper		  kVexDigital_10
 
  #define PI  3.14
 
@@ -114,7 +111,7 @@ void stopMotors(void)
 	vexMotorSet(motBackRight, 0);
 	vexMotorSet(motBackLeft, 0);
 }
-*/c
+*/
 /*
  *This controls the extension and retraction of our arm. 
  *
@@ -347,9 +344,9 @@ void closeClaw(void)
  *@since 2014-12-21
  *
  *@param[in] position
- *	This is the desired position of the lift, either 1, 2, 2.5, or 
+ *	This is the desired position of the lift, either 1, 2, 2.5, or 3
  *@param[in] current
- *	This is a variable; it has a value.
+ *	This is the current position of the lift, 1, 2, 2.5, or 3
  */
  /*
 void raiseArm(int position, int current) 
