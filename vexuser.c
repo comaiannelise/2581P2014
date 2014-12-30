@@ -311,7 +311,7 @@ void pointTurnRight(void)
 }
 
 
-/*
+
  *This opens the claw when called. 
  *@since 2014-12-21
  
@@ -320,18 +320,19 @@ void openClaw(void)
 	vexMotorSet(motClaw, 63);
 	wait(100);
 }
-*/
+
 /*
  *This closes the claw when called. 
  *@since 2014-12-21
- 
+*/ 
+
 void closeClaw(void)	
 {
 	vexMotorSet(motClaw, -63);
 	wait(100);
 }
 
-*/
+
 
 /*
 *This function will somehow raise the lift.
