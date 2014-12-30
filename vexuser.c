@@ -75,7 +75,195 @@ static  vexMotorCfg mConfig[kVexMotorNum] = {
  * All user functions are stored here
  */
 
+ //Autonomous Functions
+
+int driveConstant = (627)/(2 * PI * 2);      //number of encoder counts per inch (current calculated value shown)
+int turnConstant = 7;                        //number of encoder counts needed to turn 90 degrees 
+int liftConstant = 3;                        //number of encoder counts needed to lift the lift from one position to the next
+
 /*
+ *This function moves the robot forward.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2014-12-21
+ *
+ *@param[in] inches
+ *  This is the number of inches the robot is supposed to move forward
+ @param driveConstant
+    This is the number of encoder counts the encoder measures when the robot goes one inch
+ */
+void driveForward(float inches) 
+{
+        vexMotorSet(motFrontLeft, -96);
+        vexMotorSet(motBackLeft, -96);
+        vexMotorSet(motFrontRight, -96);
+        vexMotorSet(motBackRight, -96);
+
+    while(vexMotorPositionGet(motBackRight) < inches * driveConstant || vexMotorPositionGet(motBackRight) > -inches * driveConstant)    
+    {
+        vexSleep( 25 );
+        /*if (vexControllerGet(Btn8D) == 1) 
+        {
+        stopMotors();
+        }*/
+    }
+
+
+        vexMotorSet(motFrontLeft, 0);
+        vexMotorSet(motBackLeft, 0);
+        vexMotorSet(motFrontRight, 0);
+        vexMotorSet(motBackRight, 0);
+
+    vexMotorPositionSet(motFrontRight, 0);
+}
+    
+/*
+ *This function also moves the robot forward.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2014-12-24
+ *
+ *@param[in] inches
+ *  This is the number of inches the robot is supposed to move forward
+ @param driveConstant
+    This is the number of encoder counts the encoder measures when the robot goes one inch
+ */
+
+void driveForwardInWhileLoop(float inches)
+{
+    while(vexMotorPositionGet(motBackRight) < inches * driveConstant || vexMotorPositionGet(motBackRight) > -inches * driveConstant)
+    {
+        vexMotorSet(motFrontLeft, -96);
+        vexMotorSet(motBackLeft, -96);
+        vexMotorSet(motFrontRight, -96);
+        vexMotorSet(motBackRight, -96);
+    }
+    vexMotorPositionSet(motBackRight, 0);
+}
+/*
+ *This function does a point turn to the left. A point
+ *turn keeps the robot in one place while it turns.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2014-12-21
+ */
+void pointTurnLeft(void)    
+{
+    while(vexMotorPositionGet(motFrontRight) < turnConstant)    
+    {
+        vexMotorSet(motFrontLeft, -96);
+        vexMotorSet(motBackLeft, -96);
+        vexMotorSet(motFrontRight, 96);
+        vexMotorSet(motBackRight, 96);
+    }
+
+    vexMotorPositionSet(motFrontRight, 0);
+}
+
+/*
+ *This function does a point turn to the right. A point
+ *turn keeps the robot in one place while it turns.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2014-12-21
+ */
+void pointTurnRight(void)   
+{
+    while(vexMotorPositionGet(motFrontLeft) < turnConstant) 
+    {
+        vexMotorSet(motFrontLeft, 96);
+        vexMotorSet(motBackLeft, 96);
+        vexMotorSet(motFrontRight, -96);
+        vexMotorSet(motBackRight, -96);
+    }
+        //if this doesn't work, remove while statement and replace with line below with proper wait time
+        // wait(1000);
+    vexMotorPositionSet(motFrontLeft, 0);
+}
+
+
+/*
+ *This opens the claw when called. 
+ *@since 2014-12-21
+ */
+ 
+void openClaw(void) 
+{
+    vexMotorSet(motClaw, 63);
+    wait(100);
+}
+
+/*
+ *This closes the claw when called. 
+ *@since 2014-12-21
+*/ 
+
+void closeClaw(void)    
+{
+    vexMotorSet(motClaw, -63);
+    wait(100);
+}
+
+
+
+/*
+*This function will somehow raise the lift.
+*
+*@author Annelise Comai <anneliesecomai@gmail.com>
+*@since 2014-12-29
+*
+*@param[in] middle
+*   Set to 1 if lift is passing through or landing at the middle lift position
+*@param[in] high
+    Set to 1 if lift is landing at the high lift position
+
+*/
+
+void raiseLift(int middle, int high)
+{
+
+        while(vexMotorPositionGet(motLiftOne) < liftConstant * (middle + high))
+        {
+            vexMotorSet(motLiftOne,   127);
+            vexMotorSet(motLiftTwo,   127);
+            vexMotorSet(motLiftThree, 127);
+            vexMotorSet(motLiftFour,  127);
+    }
+}
+
+/*
+*This function will somehow lower the lift.
+*
+*@author Annelise Comai <anneliesecomai@gmail.com>
+*@since 2014-12-29
+*
+*@param[in] middle
+*   Set to 1 if lift is passing through or landing at the middle lift position
+*@param[in] low
+    Set to 1 if lift is landing at the low lift position
+
+*/
+
+void lowerLift(int middle, int low)
+{
+
+        while(vexMotorPositionGet(motLiftOne) > -1 * liftConstant * (middle + low))
+        {
+            vexMotorSet(motLiftOne,   -127);
+            vexMotorSet(motLiftTwo,   -127);
+            vexMotorSet(motLiftThree, -127);
+            vexMotorSet(motLiftFour,  -127);
+    }
+}
+
+
+/********************
+
+
+//Driver Period Functions
+
+
+
  *This function uses analog joysticks to drive the robot. 
  *
  *@author Alex Miller <alexmiller965@gmail.com>
@@ -206,174 +394,6 @@ void vexUserInit()
  * @details
  *  This thread is started when the autonomous period is started
  */
-int driveConstant = (627)/(2 * PI * 2);      //number of encoder counts per inch (current calculated value shown)
-int turnConstant = 7;   					 //number of encoder counts needed to turn 90 degrees 
-int liftConstant = 3;  		  				 //number of encoder counts needed to lift the lift from one position to the next
-
-/*
- *This function moves the robot forward.
- *
- *@author Annelise Comai <anneliesecomai@gmail.com>
- *@since 2014-12-21
- *
- *@param[in] inches
- *	This is the number of inches the robot is supposed to move forward
- @param driveConstant
- 	This is the number of encoder counts the encoder measures when the robot goes one inch
- */
-void driveForward(float inches)	
-{
-		vexMotorSet(motFrontLeft, -96);
-		vexMotorSet(motBackLeft, -96);
-		vexMotorSet(motFrontRight, -96);
-		vexMotorSet(motBackRight, -96);
-
-	while(vexMotorPositionGet(motBackRight) < inches * driveConstant || vexMotorPositionGet(motBackRight) > -inches * driveConstant)	
-	{
-		vexSleep( 25 );
-		/*if (vexControllerGet(Btn8D) == 1)	
-		{
-		stopMotors();
-		}*/
-	}
-
-
-		vexMotorSet(motFrontLeft, 0);
-		vexMotorSet(motBackLeft, 0);
-		vexMotorSet(motFrontRight, 0);
-		vexMotorSet(motBackRight, 0);
-
-	vexMotorPositionSet(motFrontRight, 0);
-}
-	
-/*
- *This function also moves the robot forward.
- *
- *@author Annelise Comai <anneliesecomai@gmail.com>
- *@since 2014-12-24
- *
- *@param[in] inches
- *	This is the number of inches the robot is supposed to move forward
- @param driveConstant
- 	This is the number of encoder counts the encoder measures when the robot goes one inch
- */
-
-void driveForwardInWhileLoop(float inches)
-{
-	while(vexMotorPositionGet(motBackRight) < inches * driveConstant || vexMotorPositionGet(motBackRight) > -inches * driveConstant)
-	{
-		vexMotorSet(motFrontLeft, -96);
-		vexMotorSet(motBackLeft, -96);
-		vexMotorSet(motFrontRight, -96);
-		vexMotorSet(motBackRight, -96);
-	}
-	vexMotorPositionSet(motBackRight, 0);
-}
-/*
- *This function does a point turn to the left. A point
- *turn keeps the robot in one place while it turns.
- *
- *@author Annelise Comai <anneliesecomai@gmail.com>
- *@since 2014-12-21
- */
-void pointTurnLeft(void)	
-{
-	while(vexMotorPositionGet(motFrontRight) < turnConstant)	
-	{
-		vexMotorSet(motFrontLeft, -96);
-		vexMotorSet(motBackLeft, -96);
-		vexMotorSet(motFrontRight, 96);
-		vexMotorSet(motBackRight, 96);
-	}
-
-	vexMotorPositionSet(motFrontRight, 0);
-}
-
-/*
- *This function does a point turn to the right. A point
- *turn keeps the robot in one place while it turns.
- *
- *@author Annelise Comai <anneliesecomai@gmail.com>
- *@since 2014-12-21
- */
-void pointTurnRight(void)	
-{
-	while(vexMotorPositionGet(motFrontLeft) < turnConstant)	
-	{
-		vexMotorSet(motFrontLeft, 96);
-		vexMotorSet(motBackLeft, 96);
-		vexMotorSet(motFrontRight, -96);
-		vexMotorSet(motBackRight, -96);
-	}
-		//if this doesn't work, remove while statement and replace with line below with proper wait time
-		// wait(1000);
-	vexMotorPositionSet(motFrontLeft, 0);
-}
-
-
-
- *This opens the claw when called. 
- *@since 2014-12-21
- 
-void openClaw(void)	
-{
-	vexMotorSet(motClaw, 63);
-	wait(100);
-}
-
-/*
- *This closes the claw when called. 
- *@since 2014-12-21
-*/ 
-
-void closeClaw(void)	
-{
-	vexMotorSet(motClaw, -63);
-	wait(100);
-}
-
-
-
-/*
-*This function will somehow raise the lift.
-*
-*@author Annelise Comai <anneliesecomai@gmail.com>
-*@since 2014-12-29
-*
-*@param[in] middle
-*   Set to 1 if lift is passing through or landing at the middle lift position
-*@param[in] high
-    Set to 1 if lift is landing at the high lift position
-
-*/
-
-
-
-void raiseLift(int middle, int high)
-{
-
-        while(vexMotorPositionGet(motLiftOne) > liftConstant * (middle + high))
-        {
-            vexMotorSet(motLiftOne,   127);
-            vexMotorSet(motLiftTwo,   127);
-            vexMotorSet(motLiftThree, 127);
-            vexMotorSet(motLiftFour,  127);
-    }
-}
-
-/*
-*This function will somehow lower the lift.
-*
-*@author Annelise Comai <anneliesecomai@gmail.com>
-*@since 2014-12-29
-*
-*@param[in] middle
-*   Set to 1 if lift is passing through or landing at the middle lift position
-*@param[in] high
-    Set to 1 if lift is landing at the high lift position
-
-*/
-
 
 
 
