@@ -51,19 +51,19 @@ static  vexDigiCfg  dConfig[kVexDigital_Num] = {
         { kVexDigital_8,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
         { kVexDigital_9,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
         { kVexDigital_10,   kVexSensorDigitalInput,  kVexConfigInput,       0 },
-        { kVexDigital_11,   kVexSensorDigitalInput,  kVexConfigQuadEnc1,    kVexQuadEncoder_1 },  //Annelise - Why are these configured for encoders?   
-        { kVexDigital_12,   kVexSensorDigitalInput,  kVexConfigQuadEnc2,    kVexQuadEncoder_1 }   //I'm sure there's a reason, but why? 
+        { kVexDigital_11,   kVexSensorDigitalInput,  kVexConfigQuadEnc1,    kVexQuadEncoder_1 },  
+        { kVexDigital_12,   kVexSensorDigitalInput,  kVexConfigQuadEnc2,    kVexQuadEncoder_1 } 
 };
 
 static  vexMotorCfg mConfig[kVexMotorNum] = {
         { kVexMotor_1,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_3 },
-        { kVexMotor_2,      kVexMotor393T,            kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_3,      kVexMotor393T,           kVexMotorNormal,     kVexSensorIME,         kImeChannel_1 },
+        { kVexMotor_2,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
+        { kVexMotor_3,      kVexMotor393T,           kVexMotorNormal,       kVexSensorIME,         kImeChannel_1 },
         { kVexMotor_4,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
         { kVexMotor_5,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_2 },
-        { kVexMotor_6,      kVexMotor393T,            kVexMotorReversed,       kVexSensorNone,        0 },
+        { kVexMotor_6,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
         { kVexMotor_7,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_8,      kVexMotor393T,      kVexMotorNormal,       kVexSensorNone,        0 },
+        { kVexMotor_8,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
         { kVexMotor_9,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_4 },
         { kVexMotor_10,     kVexMotor393T,      	 kVexMotorNormal,       kVexSensorNone,        0 },
 };
@@ -113,7 +113,7 @@ void stopMotors(void)
 }
 */
 /*
- *This controls the extension and retraction of our arm. 
+ *This controls the extension and retraction of the chain lift. 
  *
  *@author Alex Miller <alexmiller965@gmail.com>
  *@since 2014-12-21
@@ -124,7 +124,7 @@ void stopMotors(void)
  *	Retracts the arm while assigned button is depressed
  */
 void
-extenderControl(int extend,int retract)
+liftControl(int extend,int retract)
 {
 	vexMotorSet(motLiftOne, 96 * (extend - retract));
     vexMotorSet(motLiftTwo, 96 * (extend - retract));
@@ -488,8 +488,8 @@ vexOperator( void *arg )
 						vexControllerGet(Ch2) * precision,	//Forward and backward movement
 						vexControllerGet(Ch4) * precision); //Rotational and turning movement
 		//Other Movement
-		extenderControl(vexControllerGet(Btn5U),	//Extends the arm
-						vexControllerGet(Btn5D)	);	//Retracts the arm
+		liftControl(    vexControllerGet(Btn5U),	    //Lifts the lift
+						vexControllerGet(Btn5D)	);	    //Lowers the lift
 		/*
         clawControl(	vexControllerGet(Btn7R),	//Opens the claw
 						vexControllerGet(Btn7L)	);	//Closes the claw
