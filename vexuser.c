@@ -23,7 +23,7 @@
 
 #define motBackRight       kVexMotor_1
 #define motFrontRight      kVexMotor_2
-#define motLiftOne         kVexMotor_3
+#define motLiftOne         kVexMotor_3      //Assuming that this has the only IME on the lift
 #define motLiftTwo         kVexMotor_4
 #define motLiftThree       kVexMotor_5
 #define motLiftFour        kVexMotor_7
@@ -128,7 +128,7 @@ void stopMotors(void)
  *	Lowers the lift while assigned button is pressed
  */
 void
-liftControl(int raises,int lower)
+liftControl(int raises, int lower)
 {
 	vexMotorSet(motLiftOne, 96 * (raises - lower));
     vexMotorSet(motLiftTwo, 96 * (raises - lower));
@@ -139,7 +139,7 @@ liftControl(int raises,int lower)
 /*
  *This function controls the opening and closing of the claw.
  *
- *@author Annelise Comai <email@here>
+ *@author Annelise Comai <anneliesecomai@gmail.com>
  *@since 2014-12-21
  *
  *@param[in] open
@@ -208,7 +208,7 @@ void vexUserInit()
  */
 int driveConstant = (627)/(2 * PI * 2);      //number of encoder counts per inch (current calculated value shown)
 int turnConstant = 7;   					 //number of encoder counts needed to turn 90 degrees 
-int liftConstant = 3;  		  				   //number of encoder counts needed to lift the lift from one position to another
+int liftConstant = 3;  		  				 //number of encoder counts needed to lift the lift from one position to the next
 
 /*
  *This function moves the robot forward.
@@ -330,114 +330,46 @@ void closeClaw(void)
 	vexMotorSet(motClaw, -63);
 	wait(100);
 }
-	*/
-/*
- *This untested function was for raising the first arm we built.  With the new chain lift, this function becomes irrelephant.
- *
- *@author Annelise Comai <anneliesecomai@gmail.com>
- *@since 2014-12-21
- *
- *@param[in] position
- *	This is the desired position of the lift, either 1, 2, 2.5, or 3
- *@param[in] current
- *	This is the current position of the lift, 1, 2, 2.5, or 3
- */
- /*
-void raiseArm(int position, int current) 
-{
-	if((position == 2) && (current == 0))	
-	{
-		while(vexMotorPositionGet(motRotateTwo) < liftConstant)	
-		{
-			vexMotorSet(motRotateTwo, 96);
-			vexMotorSet(motRotateOne, 96);
-		}
-	}
-
-	else if((position == 3) && (current == 0))	
-	{
-		while((vexImeGetCount(motRotateTwo)) < (2 * liftConstant))	
-		{
-			vexMotorSet(motRotateTwo, 96);
-			vexMotorSet(motRotateOne, 96);
-		}
-	}
-
-	else if((position == 3) && (current == 2))	
-	{
-		while(vexImeGetCount(motRotateTwo) < liftConstant)	
-		{
-			vexMotorSet(motRotateTwo, 96);
-			vexMotorSet(motRotateOne, 96);
-		}
-	}
-
-	else if(position == 2.5 && current == 2)	
-	{
-		while(vexImeGetCount(motRotateTwo) < .5 * liftConstant)	
-		{
-			vexMotorSet(motRotateTwo, 96);
-			vexMotorSet(motRotateOne, 96);
-		}
-	}
-
-	vexMotorPositionSet(motRotateTwo, 0);
-}*/
-
-/*
- *This function was for the lowering of the first arm we built.  With the chain lift, this function becomes irrelevant.
- *
- *@author Annelise Comai <anneliesecomai@gmail.com>
- *@since 2014-12-21
- *
- *@param[in] position
- *	This is a variable; it has a value.
- *@param[in] current
- *	This is a variable; it has a value.
- */
- /*
-void lowerArm(int position, int current)	
-{
-	if(position == 0 && current == 2)	
-	{
-		while(vexImeGetCount(motRotateTwo) < -liftConstant)	
-		{
-			vexMotorSet(motRotateTwo, -96);
-			vexMotorSet(motRotateOne, -96);
-		}
-	}
-
-	else if(position == 0 && current == 3)	
-	{
-		while(vexImeGetCount(motRotateTwo) < -liftConstant * 2)	
-		{
-			vexMotorSet(motRotateTwo, -96);
-			vexMotorSet(motRotateOne, -96);
-		}
-	}
-
-	else if(position == 2 && current == 3)	
-	{
-		while (vexImeGetCount(motRotateTwo) < -liftConstant)	
-		{
-			vexMotorSet(motRotateTwo, -96);
-			vexMotorSet(motRotateOne, -96);
-		}
-	}
-
-	else if(position == 0 && current == 2.5)	
-	{
-		while (vexImeGetCount(motRotateTwo) < -1.5 * liftConstant)	
-		{
-			vexMotorSet(motRotateTwo, -96);
-			vexMotorSet(motRotateOne, -96);
-		}
-	}
-
-	vexImeSetCount(motRotateTwo, 0);
-}
 
 */
+
+/*
+*This function will somehow raise/lower the lift.
+*
+*@author Annelise Comai <anneliesecomai@gmail.com>
+*@since 2014-12-29
+*
+*@param[in] middle
+*   Set to 1 if lift is passing through or landing at the middle lift position
+*@param[in] high
+    Set to 1 if lift is landing at the high lift position
+
+*/
+
+
+
+void raiseLift(int middle, int high)
+{
+
+        while(vexMotorPositionGet(motLiftOne) > liftConstant * (middle + high))
+        {
+            vexMotorSet(motLiftOne,   127);
+            vexMotorSet(motLiftTwo,   127);
+            vexMotorSet(motLiftThree, 127);
+            vexMotorSet(motLiftFour,  127);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
 msg_t vexAutonomous( void *arg )
 {
     (void)arg;
