@@ -57,15 +57,15 @@ static  vexDigiCfg  dConfig[kVexDigital_Num] = {
 };
 
 static  vexMotorCfg mConfig[kVexMotorNum] = {
-        { kVexMotor_1,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_3 },
+        { kVexMotor_1,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
         { kVexMotor_2,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
         { kVexMotor_3,      kVexMotor393T,           kVexMotorNormal,       kVexSensorIME,         kImeChannel_1 },
         { kVexMotor_4,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_5,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_2 },
+        { kVexMotor_5,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
         { kVexMotor_6,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
         { kVexMotor_7,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
         { kVexMotor_8,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_9,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_4 },
+        { kVexMotor_9,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
         { kVexMotor_10,     kVexMotor393T,      	 kVexMotorNormal,       kVexSensorNone,        0 },
 };
 
@@ -97,7 +97,10 @@ void moveFunc(int ch1, int ch2, int ch4)
 }
 
 /*
+
  *This stops all motors on the robot. 
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
  *@since 2014-12-21
  */
 void stopMotors(void)	
@@ -114,9 +117,9 @@ void stopMotors(void)
 }
 
 /*
- *This controls the extension and retraction of the chain lift. 
+ *This controls the raising and lowering of the chain lift. 
  *
- *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@author Alex Miller <alexmiller965@gmail.com>
  *@since 2014-12-29
  *
  *@param[in] raises 
@@ -166,7 +169,7 @@ vexMotorSet(motClaw, 127 * (open - close));
  */
 void footControl(int extend, int retract )
 {
-if(extend == 1)	
+if(extend == 1)
 	{
 	vexDigitalPinSet(1, kVexDigitalHigh);
 	}
@@ -481,9 +484,11 @@ vexOperator( void *arg )
 		//Other Movement
 		liftControl(    vexControllerGet(Btn5U),	    //Lifts the lift
 						vexControllerGet(Btn5D)	);	    //Lowers the lift
-		/*
+		
         clawControl(	vexControllerGet(Btn7R),	//Opens the claw
 						vexControllerGet(Btn7L)	);	//Closes the claw
+
+        /*
 		footControl(	vexControllerGet(Btn8L),	//Extends the foot
 						vexControllerGet(Btn8R) );	//Retracts the foot
         */
