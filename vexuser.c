@@ -21,14 +21,15 @@
 #include "hal.h" 		// hardware abstraction layer header
 #include "vex.h"		// vex library header
 
-#define motBackRight         kVexMotor_1
-#define motFrontRight        kVexMotor_2
-#define motLiftOne           kVexMotor_3
-#define motLiftTwo           kVexMotor_4
-#define motLiftThree         kVexMotor_5
-#define motLiftFour          kVexMotor_7
-#define motFrontLeft         kVexMotor_6
-#define motClaw              kVexMotor_7
+#define motBackRight       kVexMotor_1
+#define motFrontRight      kVexMotor_2
+#define motLiftOne         kVexMotor_3
+#define motLiftTwo         kVexMotor_4
+#define motLiftThree       kVexMotor_5
+#define motLiftFour        kVexMotor_7
+#define motFrontLeft       kVexMotor_6
+#define motClaw            kVexMotor_7
+#define motBackLeft        kVexMotor_8
 
 #define firstJumper		  kVexDigital_1
 #define secondJumper	  kVexDigital_2
@@ -71,7 +72,7 @@ static  vexMotorCfg mConfig[kVexMotorNum] = {
 /**
  * @brief Functions
  * @details
- * All user function's are stored here
+ * All user functions are stored here
  */
 
 /*
@@ -98,20 +99,20 @@ void moveFunc(int ch1, int ch2, int ch4)
 /*
  *This stops all motors on the robot. 
  *@since 2014-12-21
- 
+ */
 void stopMotors(void)	
 {
 	vexMotorSet(motClaw, 0);
-	vexMotorSet(motExtender, 0);
-	vexMotorSet(motForeArm, 0);
-	vexMotorSet(motRotateTwo, 0);
-	vexMotorSet(motRotateOne, 0);
 	vexMotorSet(motFrontRight, 0);
-	vexMotorSet(motFrontLeft, 0);
 	vexMotorSet(motBackRight, 0);
-	vexMotorSet(motBackLeft, 0);
+	vexMotorSet(motFrontLeft, 0);
+	vexMotorSet(motFrontRight, 0);
+	vexMotorSet(motLiftOne, 0);
+	vexMotorSet(motLiftTwo, 0);
+	vexMotorSet(motLiftThree, 0);
+	vexMotorSet(motLiftFour, 0);
 }
-*/
+
 /*
  *This controls the extension and retraction of the chain lift. 
  *
