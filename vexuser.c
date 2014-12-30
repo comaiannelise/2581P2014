@@ -334,7 +334,7 @@ void closeClaw(void)
 */
 
 /*
-*This function will somehow raise/lower the lift.
+*This function will somehow raise the lift.
 *
 *@author Annelise Comai <anneliesecomai@gmail.com>
 *@since 2014-12-29
@@ -360,7 +360,18 @@ void raiseLift(int middle, int high)
     }
 }
 
+/*
+*This function will somehow lower the lift.
+*
+*@author Annelise Comai <anneliesecomai@gmail.com>
+*@since 2014-12-29
+*
+*@param[in] middle
+*   Set to 1 if lift is passing through or landing at the middle lift position
+*@param[in] high
+    Set to 1 if lift is landing at the high lift position
 
+*/
 
 
 
