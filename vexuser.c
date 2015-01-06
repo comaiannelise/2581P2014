@@ -101,8 +101,8 @@ void vexUserSetup()
 }
 
 /**
- *  @brief User initialize
- *  @details
+ * @brief User initialize
+ * @details
  *  This function is called after all setup is complete and communication has
  *  been established with the master processor.
  *  Start other tasks and initialize user variables here
@@ -125,10 +125,10 @@ msg_t vexAutonomous( void *arg )
     vexTaskRegister("auton");
 
     while(1)
-        {
+    {
         // Don't hog cpu
         vexSleep( 25 );
-        }
+    }
 
     return (msg_t)0;
 }
@@ -148,11 +148,11 @@ msg_t vexOperator( void *arg )
 
 	// Run until asked to terminate
 	while(!chThdShouldTerminate())
-		{
+	{
 
 		// Don't hog cpu
 		vexSleep( 25 );
-		}
+	}
 
 	return (msg_t)0;
 }
