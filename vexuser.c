@@ -35,6 +35,8 @@
 
 #define LIFT_1   kVexMotor_8  //Front Left Lift Motor
 #define LIFT_2   kVexMotor_9  //Front Right Lift Motor
+#define LIFT_3   kVexMotor_10 //Upper Lift Motor
+
 
 #define SHUTTLE  kVexMotor_5  //controls claw shuttle
 #define CLAW     kVexMotor_6  //actuates claw
@@ -69,7 +71,7 @@ static  vexMotorCfg mConfig[kVexMotorNum] = {
         { kVexMotor_7,  kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_3 },
         { LIFT_1,       kVexMotor393T,     kVexMotorReversed,     kVexSensorIME,                kImeChannel_4 },
         { LIFT_2,       kVexMotor393T,     kVexMotorReversed,     kVexSensorIME,                kImeChannel_1 },
-        { kVexMotor_10, kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_2 }
+        { LIFT_3,       kVexMotor393T,     kVexMotorReversed,     kVexSensorIME,                kImeChannel_6 }
 };
 
 // Input Variables
@@ -212,6 +214,8 @@ void setMotors(void)
     //Setting Lift Motors
     vexMotorSet(LIFT_1,liftSpeed);
     vexMotorSet(LIFT_2,liftSpeed);
+    vexMotorSet(LIFT_3,liftSpeed);
+
     //Additional lift motors go here
 
     //Add Claw and Shuttle motor code here...
