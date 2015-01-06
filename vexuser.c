@@ -17,21 +17,42 @@
  * @since 2014-12-22
  ******************************************************************************/
 #include <stdlib.h>
+#include <math.h>
 
 #include "ch.h"  		// needs for all ChibiOS programs
 #include "hal.h" 		// hardware abstraction layer header
 #include "vex.h"		// vex library header
+#include "vexuser.h"    // function declarations
+#include "apollo.h"     // the library that includes the apollo debug window in screen
+#include "smartmotor.h" // the library for smart motors
+
+//Motors Declaration
+
+#define BASE_NW  kVexMotor_2  //Front Left Drive Motor
+#define BASE_NE  kVexMotor_3  //Front Right Drive Motor
+#define BASE_SE  kVexMotor_4  //Back Right Drive Motor
+#define BASE_SW  kVexMotor_1  //Back Left Drive Motor
+
+#define LIFT_1   kVexMotor_8  //Front Left Lift Motor
+#define LIFT_2   kVexMotor_9  //Front Right Lift Motor
+
+#define SHUTTLE  kVexMotor_5  //controls claw shuttle
+#define CLAW     kVexMotor_6  //actuates claw
+
+//Other Preprocessor Declaration
+
+ #define PI (3.14159265359)
 
 // Digi IO configuration
 static  vexDigiCfg  dConfig[kVexDigital_Num] = {
-        { kVexDigital_1,    kVexSensorDigitalOutput, kVexConfigOutput,      0 },
-        { kVexDigital_2,    kVexSensorDigitalOutput, kVexConfigOutput,      0 },
-        { kVexDigital_3,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
-        { kVexDigital_4,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
-        { kVexDigital_5,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
-        { kVexDigital_6,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
-        { kVexDigital_7,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
-        { kVexDigital_8,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
+        { kVexDigital_1,    kVexSensorQuadEncoder,   kVexConfigQuadEnc1,    kVexQuadEncoder_1 },
+        { kVexDigital_2,    kVexSensorQuadEncoder,   kVexConfigQuadEnc2,    kVexQuadEncoder_1 },
+        { kVexDigital_3,    kVexSensorQuadEncoder,   kVexConfigQuadEnc1,    kVexQuadEncoder_2 },
+        { kVexDigital_4,    kVexSensorQuadEncoder,   kVexConfigQuadEnc2,    kVexQuadEncoder_2 },
+        { kVexDigital_5,    kVexSensorQuadEncoder,   kVexConfigQuadEnc1,    kVexQuadEncoder_3 },
+        { kVexDigital_6,    kVexSensorQuadEncoder,   kVexConfigQuadEnc2,    kVexQuadEncoder_3 },
+        { kVexDigital_7,    kVexSensorQuadEncoder,   kVexConfigQuadEnc1,    kVexQuadEncoder_4 },
+        { kVexDigital_8,    kVexSensorQuadEncoder,   kVexConfigQuadEnc2,    kVexQuadEncoder_4 },
         { kVexDigital_9,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
         { kVexDigital_10,   kVexSensorDigitalInput,  kVexConfigInput,       0 },
         { kVexDigital_11,   kVexSensorDigitalInput,  kVexConfigInput,       0 },
@@ -39,17 +60,34 @@ static  vexDigiCfg  dConfig[kVexDigital_Num] = {
 };
 
 static  vexMotorCfg mConfig[kVexMotorNum] = {
-        { kVexMotor_1,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_2,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_3,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_4,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_5,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_6,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_7,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_8,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_9,      kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_10,     kVexMotorUndefined,      kVexMotorNormal,       kVexSensorNone,        0 }
+        { BASE_SW,      kVexMotor393T,     kVexMotorNormal,       kVexSensorQuadEncoder,        kVexQuadEncoder_4 },
+        { BASE_NW,      kVexMotor393T,     kVexMotorReversed,     kVexSensorQuadEncoder,        kVexQuadEncoder_1 },
+        { BASE_NE,      kVexMotor393T,     kVexMotorNormal,       kVexSensorQuadEncoder,        kVexQuadEncoder_2 },
+        { BASE_SE,      kVexMotor393T,     kVexMotorNormal,       kVexSensorQuadEncoder,        kVexQuadEncoder_3 },
+        { SHUTTLE,      kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_5 },
+        { CLAW,         kVexMotor393T,     kVexMotorNormal,       kVexSensorNone,               0 },
+        { kVexMotor_7,  kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_3 },
+        { LIFT_1,       kVexMotor393T,     kVexMotorReversed,     kVexSensorIME,                kImeChannel_4 },
+        { LIFT_2,       kVexMotor393T,     kVexMotorReversed,     kVexSensorIME,                kImeChannel_1 },
+        { kVexMotor_10, kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_2 }
 };
+
+// Input Variables
+
+int vertical;
+int horizontal;
+int spin;
+int liftSpeed;
+int clawPosition;
+int shuttleSpeed;
+
+//Limits and Acceleration djustments
+
+int deadZone = 10;
+
+int maxAVert = 5;
+int maxAHoriz = 1;
+int maxASpin = 3;
 
 /**
  * @brief User setup
@@ -63,8 +101,8 @@ void vexUserSetup()
 }
 
 /**
- *  @brief User initialize
- *  @details
+ * @brief User initialize
+ * @details
  *  This function is called after all setup is complete and communication has
  *  been established with the master processor.
  *  Start other tasks and initialize user variables here
@@ -87,10 +125,10 @@ msg_t vexAutonomous( void *arg )
     vexTaskRegister("auton");
 
     while(1)
-        {
+    {
         // Don't hog cpu
         vexSleep( 25 );
-        }
+    }
 
     return (msg_t)0;
 }
@@ -110,11 +148,72 @@ msg_t vexOperator( void *arg )
 
 	// Run until asked to terminate
 	while(!chThdShouldTerminate())
-		{
+	{
+
+        updateInput();
+        setMotors();
 
 		// Don't hog cpu
 		vexSleep( 25 );
-		}
+	}
 
 	return (msg_t)0;
+}
+
+/*
+ * This function determines and returns an acceptable increment to the given 
+ *     power level based on user input.
+ */
+int getPowerIncrement(int oldValue, int input, int deadZone, int maxAcceleration)
+{
+    if(input > deadZone || input < -deadZone)
+    {
+        if(input > oldValue + maxAcceleration) 
+        {
+            return maxAcceleration;
+        }
+        else if(input < oldValue - maxAcceleration) 
+        {
+            return -maxAcceleration;
+        }
+        return input;
+    }
+    return 0;
+}
+
+/*
+ * This function takes the controller input and modify values for use.
+ */
+ void updateInput(void)
+ {
+    //Movement input adjusted for deadzone and maximum acceleration
+    vertical += getPowerIncrement(vertical,vexControllerGet(Ch3),deadZone,maxAVert);
+    horizontal += getPowerIncrement(horizontal,vexControllerGet(Ch4),deadZone,maxAHoriz);
+    spin += getPowerIncrement(spin,vexControllerGet(Ch1),deadZone,maxASpin);
+    
+    //Lift input adjusted for deadzone
+    liftSpeed += getPowerIncrement(liftSpeed,vexControllerGet(Ch2),deadZone,liftSpeed - vexControllerGet(Ch2));
+
+    //Add Claw and Shuttle input modifying code goes here...
+ }
+
+/*
+ * This function sets all the motors for driver control based
+ * 
+ */
+void setMotors(void)
+{
+    //Setting Base Drive Motors
+    vexMotorSet(BASE_NW, spin + vertical + horizontal);
+    vexMotorSet(BASE_NE, spin - vertical + horizontal);
+    vexMotorSet(BASE_SE, spin - vertical - horizontal);
+    vexMotorSet(BASE_SW, spin + vertical - horizontal);
+
+    //Setting Lift Motors
+    vexMotorSet(LIFT_1,liftSpeed);
+    vexMotorSet(LIFT_2,liftSpeed);
+    //Additional lift motors go here
+
+    //Add Claw and Shuttle motor code here...
+
 }
