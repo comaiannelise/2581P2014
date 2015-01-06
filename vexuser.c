@@ -191,5 +191,26 @@ int getPowerIncrement(int oldValue, int input, int deadZone, int maxAcceleration
     //Lift input adjusted for deadzone
     liftSpeed += getPowerIncrement(liftSpeed,vexControllerGet(Ch2),deadZone,liftSpeed - vexControllerGet(Ch2));
 
-    //Add Claw and Shuttle code goes here...
+    //Add Claw and Shuttle input modifying code goes here...
  }
+
+/*
+ * This function sets all the motors for driver control based
+ * 
+ */
+void setMotors(void)
+{
+    //Setting Base Drive Motors
+    vexMotorSet(BASE_NW, spin + vertical + horizontal);
+    vexMotorSet(BASE_NE, spin - vertical + horizontal);
+    vexMotorSet(BASE_SE, spin - vertical - horizontal);
+    vexMotorSet(BASE_SW, spin + vertical - horizontal);
+
+    //Setting Lift Motors
+    vexMotorSet(LIFT_1,liftSpeed);
+    vexMotorSet(LIFT_2,liftSpeed);
+    //Additional lift motors go here
+
+    //Add Claw and Shuttle motor code here...
+
+}
