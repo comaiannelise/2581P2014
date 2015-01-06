@@ -177,3 +177,19 @@ int getPowerIncrement(int oldValue, int input, int deadZone, int maxAcceleration
     }
     return 0;
 }
+
+/*
+ * This function takes the controller input and modify values for use.
+ */
+ void updateInput(void)
+ {
+    //Movement input adjusted for deadzone and maximum acceleration
+    vertical += getPowerIncrement(vertical,vexControllerGet(Ch3),deadZone,maxAVert);
+    horizontal += getPowerIncrement(horizontal,vexControllerGet(Ch4),deadZone,maxAHoriz);
+    spin += getPowerIncrement(spin,vexControllerGet(Ch1),deadZone,maxASpin);
+    
+    //Lift input adjusted for deadzone
+    liftSpeed += getPowerIncrement(liftSpeed,vexControllerGet(Ch2),deadZone,liftSpeed - vexControllerGet(Ch2));
+
+    //Add Claw and Shuttle code goes here...
+ }
