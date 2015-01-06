@@ -150,6 +150,9 @@ msg_t vexOperator( void *arg )
 	while(!chThdShouldTerminate())
 	{
 
+        updateInput();
+        setMotors();
+
 		// Don't hog cpu
 		vexSleep( 25 );
 	}
