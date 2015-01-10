@@ -35,7 +35,7 @@
 
 #define LIFT_1   kVexMotor_7  //Front Left Lift Motor
 #define LIFT_2   kVexMotor_8  //Front Right Lift Motor
-#define LIFT_3   kVexMotor_10 //Upper Lift Motor
+#define LIFT_3   kVexMotor_9 //Upper Lift Motor
 
 
 #define SHUTTLE  kVexMotor_5  //controls claw shuttle
@@ -68,10 +68,10 @@ static  vexMotorCfg mConfig[kVexMotorNum] = {
         { BASE_SE,      kVexMotor393T,     kVexMotorReversed,     kVexSensorQuadEncoder,        kVexQuadEncoder_3 },
         { SHUTTLE,      kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_5 },
         { CLAW,         kVexMotor393T,     kVexMotorNormal,       kVexSensorNone,               0 },
-        { kVexMotor_7,  kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_3 },
-        { LIFT_1,       kVexMotor393T,     kVexMotorReversed,     kVexSensorIME,                kImeChannel_4 },
-        { LIFT_2,       kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_1 },
-        { LIFT_3,       kVexMotor393T,     kVexMotorReversed,     kVexSensorIME,                kImeChannel_6 }
+        { LIFT_1,       kVexMotor393T,     kVexMotorReversed,     kVexSensorIME,                kImeChannel_3 },
+        { LIFT_2,       kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_4 },
+        { LIFT_3,       kVexMotor393T,     kVexMotorReversed,     kVexSensorIME,                kImeChannel_1 },
+        { kVexMotor_10, kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_6 }
 };
 
 // Input Variables
