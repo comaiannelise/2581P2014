@@ -86,6 +86,7 @@ int shuttleSpeed;
 //Limits and Acceleration djustments
 
 int deadZone = 10;
+int deadZone = 15;
 
 int maxAVert = 5;
 int maxAHoriz = 1;
