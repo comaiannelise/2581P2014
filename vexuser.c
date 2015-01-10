@@ -63,14 +63,14 @@ static  vexDigiCfg  dConfig[kVexDigital_Num] = {
 
 static  vexMotorCfg mConfig[kVexMotorNum] = {
         { BASE_SW,      kVexMotor393T,     kVexMotorNormal,       kVexSensorQuadEncoder,        kVexQuadEncoder_4 },
-        { BASE_NW,      kVexMotor393T,     kVexMotorReversed,     kVexSensorQuadEncoder,        kVexQuadEncoder_1 },
+        { BASE_NW,      kVexMotor393T,     kVexMotorNormal,       kVexSensorQuadEncoder,        kVexQuadEncoder_1 },
         { BASE_NE,      kVexMotor393T,     kVexMotorNormal,       kVexSensorQuadEncoder,        kVexQuadEncoder_2 },
-        { BASE_SE,      kVexMotor393T,     kVexMotorNormal,       kVexSensorQuadEncoder,        kVexQuadEncoder_3 },
+        { BASE_SE,      kVexMotor393T,     kVexMotorReversed,     kVexSensorQuadEncoder,        kVexQuadEncoder_3 },
         { SHUTTLE,      kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_5 },
         { CLAW,         kVexMotor393T,     kVexMotorNormal,       kVexSensorNone,               0 },
         { kVexMotor_7,  kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_3 },
         { LIFT_1,       kVexMotor393T,     kVexMotorReversed,     kVexSensorIME,                kImeChannel_4 },
-        { LIFT_2,       kVexMotor393T,     kVexMotorReversed,     kVexSensorIME,                kImeChannel_1 },
+        { LIFT_2,       kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_1 },
         { LIFT_3,       kVexMotor393T,     kVexMotorReversed,     kVexSensorIME,                kImeChannel_6 }
 };
 
