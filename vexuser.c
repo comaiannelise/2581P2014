@@ -85,7 +85,6 @@ int shuttleSpeed;
 
 //Limits and Acceleration djustments
 
-int deadZone = 10;
 int deadZone = 15;
 
 int maxAVert = 5;
@@ -194,8 +193,18 @@ int getPowerIncrement(int oldValue, int input, int deadZone, int maxAcceleration
     horizontal += getPowerIncrement(horizontal,vexControllerGet(Ch4),deadZone,maxAHoriz);
     spin += getPowerIncrement(spin,vexControllerGet(Ch1),deadZone,maxASpin);
     
-    //Lift input adjusted for deadzone
-    liftSpeed += getPowerIncrement(liftSpeed,vexControllerGet(Ch2),deadZone,liftSpeed - vexControllerGet(Ch2));
+    //Lift input adjusted for deadzone FIX
+    //liftSpeed += getPowerIncrement(liftSpeed,vexControllerGet(Ch2),deadZone,liftSpeed - vexControllerGet(Ch2));
+
+    if(vexControllerGet(Ch2) > deadZone || vexControllerGet(Ch2) < -deadZone)
+    {
+        liftSpeed = vexControllerGet(Ch2);
+    }
+    else
+    {
+        liftSpeed = 0;
+    }
+
 
     //Add Claw and Shuttle input modifying code goes here...
  }
