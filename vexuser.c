@@ -33,8 +33,8 @@
 #define BASE_SE  kVexMotor_4  //Back Right Drive Motor
 #define BASE_SW  kVexMotor_1  //Back Left Drive Motor
 
-#define LIFT_1   kVexMotor_8  //Front Left Lift Motor
-#define LIFT_2   kVexMotor_9  //Front Right Lift Motor
+#define LIFT_1   kVexMotor_7  //Front Left Lift Motor
+#define LIFT_2   kVexMotor_8  //Front Right Lift Motor
 #define LIFT_3   kVexMotor_10 //Upper Lift Motor
 
 
