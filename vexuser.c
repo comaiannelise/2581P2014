@@ -180,7 +180,7 @@ int getPowerIncrement(int oldValue, int input, int deadZone, int maxAcceleration
         }
         return input;
     }
-    return 0;
+    return -oldValue;
 }
 
 /*
