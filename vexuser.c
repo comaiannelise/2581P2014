@@ -95,7 +95,7 @@ int liftConstant = 1500;  //2783;                         //number of encoder co
  @param driveConstant
     This is the number of encoder counts the encoder measures when the robot goes one inch
  */
-void driveForward(float inches) 
+void driveForwardWithoutWhileLoop(float inches) 
 {
         vexMotorSet(motFrontLeft, 96);
         vexMotorSet(motBackLeft, 96);
@@ -132,7 +132,7 @@ void driveForward(float inches)
     This is the number of encoder counts the encoder measures when the robot goes one inch
  */
 
-void driveForwardInWhileLoop(float inches)
+void driveForward(float inches)
 {
     vexMotorPositionSet(motBackRight, 0);
     while(vexMotorPositionGet(motBackRight) > -inches * driveConstant)
@@ -442,12 +442,12 @@ vexOperator( void *arg )
 	// Must call this
 	vexTaskRegister("operator");
 
-if (firstJumper == 0)  //If firstjumper is plugged in
-    {
+//if (firstJumper == 0)  //If firstjumper is plugged in
+  //  {
         vexMotorPositionSet(motBackRight, 0);
         vexMotorPositionSet(motLiftOne, 0);
-        driveForwardInWhileLoop(12);
-    }
+       // driveForward(12);
+   // }
 	// Run until asked to terminate
 	while(!chThdShouldTerminate())
 		{
