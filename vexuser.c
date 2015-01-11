@@ -135,7 +135,7 @@ void driveForward(float inches)
 void driveForwardInWhileLoop(float inches)
 {
     vexMotorPositionSet(motBackRight, 0);
-    while(vexMotorPositionGet(motBackRight) < -inches * driveConstant)
+    while(vexMotorPositionGet(motBackRight) > -inches * driveConstant)
     {
         vexMotorSet(motFrontLeft, -96);
         vexMotorSet(motBackLeft, -96);
@@ -442,13 +442,11 @@ vexOperator( void *arg )
 	// Must call this
 	vexTaskRegister("operator");
 
-if (firstJumper == 1)  
+if (firstJumper == 0)  //If firstjumper is plugged in
     {
         vexMotorPositionSet(motBackRight, 0);
         vexMotorPositionSet(motLiftOne, 0);
-        driveForwardInWhileLoop(12);
-        pointTurnLeft();
-        raiseLift(1, 0);
+       // driveForwardInWhileLoop(12);
     }
 	// Run until asked to terminate
 	while(!chThdShouldTerminate())
