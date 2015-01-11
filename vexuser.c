@@ -157,7 +157,7 @@ void driveForwardInWhileLoop(float inches)
  */
 void pointTurnLeft(void)    
 {
-    while(vexMotorPositionGet(motBackRight) < turnConstant)    
+    while(vexMotorPositionGet(motBackRight) > turnConstant)    
     {
         vexMotorSet(motFrontLeft, -96);
         vexMotorSet(motBackLeft, -96);
