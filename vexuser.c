@@ -444,6 +444,7 @@ vexOperator( void *arg )
     vexMotorPositionSet(motBackRight, 0);
     vexMotorPositionSet(motLiftOne, 0);
     pointTurnLeft();
+    raiseLift(1, 0);
 
 	// Run until asked to terminate
 	while(!chThdShouldTerminate())
