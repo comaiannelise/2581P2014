@@ -24,7 +24,7 @@
 #include "hal.h" 		// hardware abstraction layer header
 #include "vex.h"		// vex library header
 
-#define motBackRight       kVexMotor_1
+#define motBackRight       kVexMotor_1      //This IME counts negative
 #define motFrontRight      kVexMotor_2
 #define motLiftOne         kVexMotor_3      //Assuming that this has the only IME on the lift
 #define motLiftTwo         kVexMotor_4
@@ -66,7 +66,7 @@ static  vexMotorCfg mConfig[kVexMotorNum] = {
         { kVexMotor_4,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
         { kVexMotor_5,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
         { kVexMotor_6,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
-        { kVexMotor_7,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
+        { kVexMotor_7,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_2},
         { kVexMotor_8,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
         { kVexMotor_9,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
         { kVexMotor_10,     kVexMotor393T,      	 kVexMotorNormal,       kVexSensorNone,        0 },
@@ -209,7 +209,7 @@ void openClaw(void)
 void closeClaw(void)    
 {
     vexMotorSet(motClaw, -63);
-    wait(100);
+   // wait(100);
 }
 
 
@@ -441,7 +441,7 @@ vexOperator( void *arg )
 	// Must call this
 	vexTaskRegister("operator");
 
-       
+    
 
 	// Run until asked to terminate
 	while(!chThdShouldTerminate())
@@ -458,8 +458,8 @@ vexOperator( void *arg )
 		liftControl(    vexControllerGet(Btn5U),	    //Lifts the lift
 						vexControllerGet(Btn5D)	);	    //Lowers the lift
 		
-        clawControl(	vexControllerGet(Btn7R),	//Opens the claw
-						vexControllerGet(Btn7L)	);	//Closes the claw
+        clawControl(	vexControllerGet(Btn8R),	//Opens the claw
+						vexControllerGet(Btn8L)	);	//Closes the claw
 
         /*
 		footControl(	vexControllerGet(Btn8L),	//Extends the foot
