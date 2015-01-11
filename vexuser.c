@@ -232,10 +232,10 @@ void raiseLift(int middle, int high)
 
         while(vexMotorPositionGet(motLiftOne) < liftConstant * (middle + high))
         {
-            vexMotorSet(motLiftOne,   127);
-            vexMotorSet(motLiftTwo,   127);
-            vexMotorSet(motLiftThree, 127);
-            vexMotorSet(motLiftFour,  127);
+            vexMotorSet(motLiftOne,   96);
+            vexMotorSet(motLiftTwo,   96);
+            vexMotorSet(motLiftThree, 96);
+            vexMotorSet(motLiftFour,  96);
     }
 }
 
