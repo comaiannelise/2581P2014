@@ -80,7 +80,7 @@ static  vexMotorCfg mConfig[kVexMotorNum] = {
 
  //Autonomous Functions
 
-int driveConstant = ((627)/(2 * PI * 2) - 10);      //number of encoder counts per inch (current calculated value shown)
+int driveConstant = 49.89;                        //number of encoder counts per inch (current calculated value shown)
 int turnConstant = -685;                          //number of encoder counts needed to turn 90 degrees  - left, at least
 int liftConstant = 1500;  //2783;                         //number of encoder counts needed to lift the lift from one position to the next
 
@@ -446,7 +446,7 @@ if (firstJumper == 0)  //If firstjumper is plugged in
     {
         vexMotorPositionSet(motBackRight, 0);
         vexMotorPositionSet(motLiftOne, 0);
-       // driveForwardInWhileLoop(12);
+        driveForwardInWhileLoop(12);
     }
 	// Run until asked to terminate
 	while(!chThdShouldTerminate())
