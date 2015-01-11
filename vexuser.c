@@ -165,7 +165,7 @@ void pointTurnLeft(void)
         vexMotorSet(motBackRight, 96);
     }
 
-    vexMotorPositionSet(motFrontRight, 0);
+    vexMotorPositionSet(motBackRight, 0);
 }
 
 /*
@@ -444,7 +444,7 @@ vexOperator( void *arg )
 
     vexMotorPositionSet(motBackRight, 0);
     vexMotorPositionSet(motLiftOne, 0);
-    driveForwardInWhileLoop(12);
+    //driveForwardInWhileLoop(12);
     pointTurnLeft();
     raiseLift(1, 0);
 
