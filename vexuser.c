@@ -444,7 +444,8 @@ vexOperator( void *arg )
 
     vexMotorPositionSet(motBackRight, 0);
     vexMotorPositionSet(motLiftOne, 0);
-    //pointTurnLeft();
+    driveForwardInWhileLoop(12);
+    pointTurnLeft();
     raiseLift(1, 0);
 
 	// Run until asked to terminate
