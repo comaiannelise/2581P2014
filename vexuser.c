@@ -82,7 +82,7 @@ static  vexMotorCfg mConfig[kVexMotorNum] = {
 
 int driveConstant = (627)/(2 * PI * 2) - 10;      //number of encoder counts per inch (current calculated value shown)
 int turnConstant = -693;                          //number of encoder counts needed to turn 90 degrees  - left, at least
-int liftConstant = 2783;                          //number of encoder counts needed to lift the lift from one position to the next
+int liftConstant = 2500;  //2783;                         //number of encoder counts needed to lift the lift from one position to the next
 
 /*
  *This function moves the robot forward.
@@ -237,6 +237,7 @@ void raiseLift(int middle, int high)
             vexMotorSet(motLiftThree, 96);
             vexMotorSet(motLiftFour,  96);
     }
+    vexMotorPositionSet(motLiftOne, 0);
 }
 
 /*
@@ -443,7 +444,7 @@ vexOperator( void *arg )
 
     vexMotorPositionSet(motBackRight, 0);
     vexMotorPositionSet(motLiftOne, 0);
-    pointTurnLeft();
+    //pointTurnLeft();
     raiseLift(1, 0);
 
 	// Run until asked to terminate
