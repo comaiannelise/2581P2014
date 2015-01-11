@@ -81,7 +81,7 @@ static  vexMotorCfg mConfig[kVexMotorNum] = {
  //Autonomous Functions
 
 int driveConstant = (627)/(2 * PI * 2) - 10;      //number of encoder counts per inch (current calculated value shown)
-int turnConstant = 7;                        //number of encoder counts needed to turn 90 degrees 
+int turnConstant = -696;                        //number of encoder counts needed to turn 90 degrees  - left, at least
 int liftConstant = 3;                        //number of encoder counts needed to lift the lift from one position to the next
 
 /*
@@ -157,7 +157,7 @@ void driveForwardInWhileLoop(float inches)
  */
 void pointTurnLeft(void)    
 {
-    while(vexMotorPositionGet(motFrontRight) < turnConstant)    
+    while(vexMotorPositionGet(motBackRight) < turnConstant)    
     {
         vexMotorSet(motFrontLeft, -96);
         vexMotorSet(motBackLeft, -96);
@@ -441,7 +441,7 @@ vexOperator( void *arg )
 	// Must call this
 	vexTaskRegister("operator");
 
-    
+    pointTurnLeft();
 
 	// Run until asked to terminate
 	while(!chThdShouldTerminate())
