@@ -442,6 +442,7 @@ vexOperator( void *arg )
 	vexTaskRegister("operator");
 
     vexMotorPositionSet(motBackRight, 0);
+    vexMotorPositionSet(motLiftOne, 0);
     pointTurnLeft();
 
 	// Run until asked to terminate
