@@ -24,7 +24,7 @@
 #include "hal.h" 		// hardware abstraction layer header
 #include "vex.h"		// vex library header
 
-#define motBackRight       kVexMotor_1      //This IME counts negative
+#define motBackRight       kVexMotor_1      //Weirdly enough, this IME counts negative
 #define motFrontRight      kVexMotor_2
 #define motLiftOne         kVexMotor_3      //Assuming that this has the only IME on the lift
 #define motLiftTwo         kVexMotor_4
@@ -62,11 +62,11 @@ static  vexDigiCfg  dConfig[kVexDigital_Num] = {
 static  vexMotorCfg mConfig[kVexMotorNum] = {
         { kVexMotor_1,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_1 },
         { kVexMotor_2,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_3,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
+        { kVexMotor_3,      kVexMotor393T,           kVexMotorNormal,       kVexSensorIME,         kImeChannel_4 },
         { kVexMotor_4,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
         { kVexMotor_5,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
-        { kVexMotor_6,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
-        { kVexMotor_7,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_2},
+        { kVexMotor_6,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_3 },
+        { kVexMotor_7,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_2 },
         { kVexMotor_8,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
         { kVexMotor_9,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
         { kVexMotor_10,     kVexMotor393T,      	 kVexMotorNormal,       kVexSensorNone,        0 },
