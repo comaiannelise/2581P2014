@@ -70,7 +70,7 @@ static  vexMotorCfg mConfig[kVexMotorNum] = {
         { CLAW,         kVexMotor393T,     kVexMotorNormal,       kVexSensorNone,               0 },
         { LIFT_1,       kVexMotor393T,     kVexMotorReversed,     kVexSensorIME,                kImeChannel_3 },
         { LIFT_2,       kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_4 },
-        { LIFT_3,       kVexMotor393T,     kVexMotorReversed,     kVexSensorIME,                kImeChannel_1 },
+        { LIFT_3,       kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_1 },
         { kVexMotor_10, kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_6 }
 };
 
@@ -231,3 +231,36 @@ void setMotors(void)
     //Add Claw and Shuttle motor code here...
 
 }
+
+/*
+ * This function drives forward a certain distance autonomously.
+ */
+void setAutonMotor(int motor, int dist, int speed)
+ {
+    //Convert distance from feet to encoder counts
+
+    //TODO: Add code...
+
+    //Set motor to speed
+    vexMotorSet(motor,speed);
+
+    //Checks which direction the motor is going
+    if(vexMotorDirectionGet(motor))
+    {
+        //Determine when to stop
+        if(vexMotorPositionGet(motor) > dist)
+        {
+            //Stop the motor
+            vexMotorSet(motor,0); 
+        }
+    }
+    else
+    {
+        //Determine when to stop
+        if(vexMotorPositionGet(motor) < -dist)
+        {
+            //Stop the motor
+            vexMotorSet(motor,0);
+        }
+    }
+ }

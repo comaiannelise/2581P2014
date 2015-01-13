@@ -38,5 +38,17 @@ void updateInput(void);
  */
 void setMotors(void);
 
+/**
+ * This function drives forward a certain distance autonomously.
+ *
+ * @author Michel Momeyer <strihawk1213@gmail.com>
+ * @since 2015-01-10
+ * @param dist[in]
+ *     the distance to travel in feet
+ * @param dist[in]
+ *     the distance to travel in feet
+ */
+ void setAutonMotor(int motor, int dist, int speed);
+
 
 #endif // VEXUSER_H
