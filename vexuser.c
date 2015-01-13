@@ -155,6 +155,20 @@ msg_t vexOperator( void *arg )
         updateInput();
         setMotors();
 
+        //Temporary Shuttle Code
+        if(vexControllerGet(Btn6U))
+        {
+            vexMotorSet(shuttle,shuttleSpeed);
+        }
+        else if(vexControllerGet(Btn6D))
+        {
+            vexMotorSet(shuttle,-shuttleSpeed);
+        }
+        else
+        {
+            vexMotorSet(shuttle,0);
+        }
+
 		// Don't hog cpu
 		vexSleep( 25 );
 	}
@@ -207,6 +221,7 @@ int getPowerIncrement(int oldValue, int input, int deadZone, int maxAcceleration
 
 
     //Add Claw and Shuttle input modifying code goes here...
+
  }
 
 /*
