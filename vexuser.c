@@ -44,6 +44,7 @@
 //Other Preprocessor Declaration
 
  #define PI (3.14159265359)
+ #define wheelConstant (1)
 
 // Digi IO configuration
 static  vexDigiCfg  dConfig[kVexDigital_Num] = {
@@ -86,7 +87,6 @@ int shuttleSpeed;
 //Limits and Acceleration djustments
 
 int deadZone = 15;
-
 int maxAVert = 5;
 int maxAHoriz = 1;
 int maxASpin = 3;
@@ -238,8 +238,7 @@ void setMotors(void)
 void setAutonMotor(int motor, int dist, int speed)
  {
     //Convert distance from feet to encoder counts
-
-    //TODO: Add code...
+    dist *= wheelConstant;
 
     //Set motor to speed
     vexMotorSet(motor,speed);
