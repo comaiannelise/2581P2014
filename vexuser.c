@@ -210,7 +210,7 @@ int getPowerIncrement(int oldValue, int input, int deadZone, int maxAcceleration
  }
 
 /*
- * This function sets all the motors for driver control based
+ * This function sets all the motors for driver control based.
  * 
  */
 void setMotors(void)
