@@ -82,7 +82,7 @@ int horizontal;
 int spin;
 int liftSpeed;
 int clawPosition;
-int shuttleSpeed;
+int shuttleSpeed = 127;
 
 //Limits and Acceleration djustments
 
@@ -158,15 +158,15 @@ msg_t vexOperator( void *arg )
         //Temporary Shuttle Code
         if(vexControllerGet(Btn6U))
         {
-            vexMotorSet(shuttle,shuttleSpeed);
+            vexMotorSet(SHUTTLE,shuttleSpeed);
         }
         else if(vexControllerGet(Btn6D))
         {
-            vexMotorSet(shuttle,-shuttleSpeed);
+            vexMotorSet(SHUTTLE,-shuttleSpeed);
         }
         else
         {
-            vexMotorSet(shuttle,0);
+            vexMotorSet(SHUTTLE,0);
         }
 
 		// Don't hog cpu
