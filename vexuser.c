@@ -81,8 +81,11 @@ static  vexMotorCfg mConfig[kVexMotorNum] = {
  //Autonomous Functions
 
 int driveConstant = 49.89;                        //number of encoder counts per inch (current calculated value shown)
-int turnConstant = -685;                          //number of encoder counts needed to turn 90 degrees  - left, at least
+int turnConstant = -685;                          //number of encoder counts needed to turn 90 degrees  - right, at least
+int turnConstantLeft = -701;                       //number of encoder counts needed to turn 90 degrees left
 int liftConstant = 1500;  //2783;                         //number of encoder counts needed to lift the lift from one position to the next
+bool shift = false;
+int print = 0;
 
 /*
  *This function moves the robot forward.
