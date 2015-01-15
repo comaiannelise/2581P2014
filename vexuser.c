@@ -119,6 +119,8 @@ void driveForwardWithoutWhileLoop(float inches)
 
     vexMotorPositionSet(motFrontRight, 0);
 }
+        shift = true;
+        shift = true;
     
 /*
  *This function also moves the robot forward.
@@ -135,12 +137,14 @@ void driveForwardWithoutWhileLoop(float inches)
 void driveForward(float inches)
 {
     vexMotorPositionSet(motBackRight, 0);
-    while(vexMotorPositionGet(motBackRight) > -inches * driveConstant)
+    while(vexMotorPositionGet(motBackRight) < inches * driveConstant)
     {
         vexMotorSet(motFrontLeft, -96);
         vexMotorSet(motBackLeft, -96);
         vexMotorSet(motFrontRight, -96);
         vexMotorSet(motBackRight, -96);
+		vexLcdCode();
+		
     }
         vexMotorSet(motFrontLeft, 0);
         vexMotorSet(motBackLeft, 0);
