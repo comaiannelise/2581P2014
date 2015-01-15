@@ -466,6 +466,42 @@ vexOperator( void *arg )
         clawControl(	vexControllerGet(Btn8R),	//Opens the claw
 						vexControllerGet(Btn8L)	);	//Closes the claw
 
+		if (print == -1){
+		print = 0;
+		}
+		else if(print == 0){
+		vexLcdPrintf(1,1, "%s%d","motBackRight: ",vexMotorPositionGet(motBackRight));
+		}
+		else if (print == 1 ){
+		vexLcdPrintf(1,1, "%s%d","motLiftOne: ",vexMotorPositionGet(motLiftOne));
+		}
+		else if (print == 2 ){
+		vexLcdPrintf(1,1, "%s%d","motFrontLeft: ",vexMotorPositionGet(motFrontLeft));
+		}
+		else if (print == 3 ){
+		vexLcdPrintf(1,1, "%s%d","motBackLeft: ",vexMotorPositionGet(motBackLeft));
+		}
+		else if (print == 4){
+		print = 0;
+		}
+
+
+		if (vexLcdButtonGet(1) == kLcdButtonLeft) {
+			if(!shift){
+				print+=1;
+			}
+			shift = true;
+		}
+		else if (vexLcdButtonGet(1) == kLcdButtonRight) {
+			if(!shift){
+				print-=1;
+			}
+			shift = true;
+		}
+		else {shift = false;}
+
+
+
         /*
 		footControl(	vexControllerGet(Btn8L),	//Extends the foot
 						vexControllerGet(Btn8R) );	//Retracts the foot
