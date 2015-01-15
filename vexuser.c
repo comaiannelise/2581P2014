@@ -259,7 +259,7 @@ void openClaw(void)
 void closeClaw(void)    
 {
     vexMotorSet(motClaw, -63);
-   // wait(100);
+  // wait(100);
 }
 
 
@@ -279,13 +279,12 @@ void closeClaw(void)
 
 void raiseLift(int middle, int high)
 {
-
-        while(vexMotorPositionGet(motLiftOne) < liftConstant * (middle + high))
-        {
-            vexMotorSet(motLiftOne,   96);
-            vexMotorSet(motLiftTwo,   96);
-            vexMotorSet(motLiftThree, 96);
-            vexMotorSet(motLiftFour,  96);
+    while(vexMotorPositionGet(motLiftOne) < liftConstant * (middle + high))
+    {
+        vexMotorSet(motLiftOne,   96);
+        vexMotorSet(motLiftTwo,   96);
+        vexMotorSet(motLiftThree, 96);
+        vexMotorSet(motLiftFour,  96);
     }
     vexMotorPositionSet(motLiftOne, 0);
 }
@@ -305,13 +304,12 @@ void raiseLift(int middle, int high)
 
 void lowerLift(int middle, int low)
 {
-
-        while(vexMotorPositionGet(motLiftOne) > -1 * liftConstant * (middle + low))
-        {
-            vexMotorSet(motLiftOne,   -127);
-            vexMotorSet(motLiftTwo,   -127);
-            vexMotorSet(motLiftThree, -127);
-            vexMotorSet(motLiftFour,  -127);
+    while(vexMotorPositionGet(motLiftOne) > -1 * liftConstant * (middle + low))
+    {
+        vexMotorSet(motLiftOne,   -127);
+        vexMotorSet(motLiftTwo,   -127);
+        vexMotorSet(motLiftThree, -127);
+        vexMotorSet(motLiftFour,  -127);
     }
 }
 
@@ -416,15 +414,16 @@ vexMotorSet(motClaw, 127 * (open - close));
  */
 void footControl(int extend, int retract )
 {
-if(extend == 1)
+    if(extend == 1)
 	{
 	vexDigitalPinSet(1, kVexDigitalHigh);
 	}
-else if(retract == 1)	
+    else if(retract == 1)	
 	{
 	vexDigitalPinSet(1, kVexDigitalLow);
 	}
 }
+
 /**
  * @brief User setup
  * @details
@@ -465,7 +464,7 @@ msg_t vexAutonomous( void *arg )
     // Must call this
     vexTaskRegister("auton");
 
-        driveForwardInWhileLoop(24);
+        driveForward(24);
         openClaw();
         
     while(1)
@@ -492,12 +491,13 @@ vexOperator( void *arg )
 	// Must call this
 	vexTaskRegister("operator");
 
-//if (firstJumper == 0)  //If firstjumper is plugged in
-  //  {
+    if (firstJumper == 0)  //If firstjumper is plugged in
+       {
         vexMotorPositionSet(motBackRight, 0);
+        vexMotorPositionSet(motFrontLeft, 0);
         vexMotorPositionSet(motLiftOne, 0);
-       // driveForward(12);
-   // }
+        driveForward(4);
+      }
 	// Run until asked to terminate
 	while(!chThdShouldTerminate())
 		{
@@ -506,7 +506,7 @@ vexOperator( void *arg )
 		
 
 		//Modifies drive base speed if certain buttons are pressed. Allows for more pewcise movement
-		moveFunc( 		vexControllerGet(Ch1) * precision,	//Strafing
+		moveFunc( 	   -vexControllerGet(Ch1) * precision,	//Strafing
 						vexControllerGet(Ch2) * precision,	//Forward and backward movement
 						vexControllerGet(Ch4) * precision); //Rotational and turning movement
 		//Other Movement
@@ -515,41 +515,10 @@ vexOperator( void *arg )
 		
         clawControl(	vexControllerGet(Btn8R),	//Opens the claw
 						vexControllerGet(Btn8L)	);	//Closes the claw
+        if(vexControllerGet(Btn8U) == 1) {
+                        driveForward(8.0)  ;}
 
-		if (print == -1){
-		print = 0;
-		}
-		else if(print == 0){
-		vexLcdPrintf(1,1, "%s%d","motBackRight: ",vexMotorPositionGet(motBackRight));
-		}
-		else if (print == 1 ){
-		vexLcdPrintf(1,1, "%s%d","motLiftOne: ",vexMotorPositionGet(motLiftOne));
-		}
-		else if (print == 2 ){
-		vexLcdPrintf(1,1, "%s%d","motFrontLeft: ",vexMotorPositionGet(motFrontLeft));
-		}
-		else if (print == 3 ){
-		vexLcdPrintf(1,1, "%s%d","motBackLeft: ",vexMotorPositionGet(motBackLeft));
-		}
-		else if (print == 4){
-		print = 0;
-		}
-
-
-		if (vexLcdButtonGet(1) == kLcdButtonLeft) {
-			if(!shift){
-				print+=1;
-			}
-			shift = true;
-		}
-		else if (vexLcdButtonGet(1) == kLcdButtonRight) {
-			if(!shift){
-				print-=1;
-			}
-			shift = true;
-		}
-		else {shift = false;}
-
+        vexLcdCode();
 
 
         /*
