@@ -208,7 +208,7 @@ void driveForward(float inches)
  *@author Annelise Comai <anneliesecomai@gmail.com>
  *@since 2014-12-21
  */
-void pointTurnLeft(void)    
+void pointTurnRight(void)    
 {
     while(vexMotorPositionGet(motBackRight) > turnConstant)    
     {
@@ -228,21 +228,18 @@ void pointTurnLeft(void)
  *@author Annelise Comai <anneliesecomai@gmail.com>
  *@since 2014-12-21
  */
-void pointTurnRight(void)   
+void pointTurnLeft(void)   
 {
-    while(vexMotorPositionGet(motFrontLeft) < turnConstant) 
+    vexMotorPositionSet(motBackRight, 0);
+    while(vexMotorPositionGet(motBackRight) > turnConstantLeft) 
     {
         vexMotorSet(motFrontLeft, 96);
         vexMotorSet(motBackLeft, 96);
         vexMotorSet(motFrontRight, -96);
         vexMotorSet(motBackRight, -96);
     }
-        //if this doesn't work, remove while statement and replace with line below with proper wait time
-        // wait(1000);
-    vexMotorPositionSet(motFrontLeft, 0);
+    vexMotorPositionSet(motBackRight, 0);
 }
-
-
 /*
  *This opens the claw when called. 
  *@since 2014-12-21
