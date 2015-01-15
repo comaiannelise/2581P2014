@@ -95,7 +95,7 @@ int liftConstant = 1500;  //2783;                         //number of encoder co
  @param driveConstant
     This is the number of encoder counts the encoder measures when the robot goes one inch
  */
-void driveForwardWithoutWhileLoop(float inches) 
+void go(float inches) 
 {
         vexMotorSet(motFrontLeft, 96);
         vexMotorSet(motBackLeft, 96);
