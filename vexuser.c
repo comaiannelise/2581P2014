@@ -213,6 +213,7 @@ void driveForward(float inches)
  */
 void pointTurnRight(void)    
 {
+    vexMotorPositionSet(motBackRight, 0);
     while(vexMotorPositionGet(motBackRight) > turnConstant)    
     {
         vexMotorSet(motFrontLeft, -96);
@@ -220,7 +221,6 @@ void pointTurnRight(void)
         vexMotorSet(motFrontRight, 96);
         vexMotorSet(motBackRight, 96);
     }
-
     vexMotorPositionSet(motBackRight, 0);
 }
 
@@ -510,25 +510,26 @@ vexOperator( void *arg )
 	while(!chThdShouldTerminate())
 		{
 
-		int precision = 1 - vexControllerGet(Btn6U) * 0.25 - vexControllerGet(Btn6D) * 0.5;
+		//int precision = 1 - vexControllerGet(Btn6U) * 0.25 - vexControllerGet(Btn6D) * 0.5;
 		
 
 		//Modifies drive base speed if certain buttons are pressed. Allows for more pewcise movement
-		moveFunc( 	   -vexControllerGet(Ch1) * precision,	//Strafing
-						vexControllerGet(Ch2) * precision,	//Forward and backward movement
-						vexControllerGet(Ch4) * precision); //Rotational and turning movement
+		moveFunc( 	   -vexControllerGet(Ch1),	    //Strafing
+						vexControllerGet(Ch2),	    //Forward and backward movement
+						vexControllerGet(Ch4));     //Rotational and turning movement
 		//Other Movement
 		liftControl(    vexControllerGet(Btn5U),	    //Lifts the lift
 						vexControllerGet(Btn5D)	);	    //Lowers the lift
 		
         clawControl(	vexControllerGet(Btn8R),	//Opens the claw
 						vexControllerGet(Btn8L)	);	//Closes the claw
+        
+
+
         if(vexControllerGet(Btn8U) == 1) {
-                        //driveForward(16.0)  ;
-                        openClaw()  ;}
+                        driveForward(8.0)  ;}
         if(vexControllerGet(Btn8D) == 1) {
-                        //driveForward(16.0)  ;
-                        closeClaw()  ;}
+                        pointTurnLeft(90);     }
 
         vexLcdCode();
 
