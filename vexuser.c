@@ -504,7 +504,7 @@ vexOperator( void *arg )
         vexMotorPositionSet(motBackRight, 0);
         vexMotorPositionSet(motFrontLeft, 0);
         vexMotorPositionSet(motLiftOne, 0);
-        driveForward(4);
+       // driveForward(4);
       }
 	// Run until asked to terminate
 	while(!chThdShouldTerminate())
@@ -524,7 +524,11 @@ vexOperator( void *arg )
         clawControl(	vexControllerGet(Btn8R),	//Opens the claw
 						vexControllerGet(Btn8L)	);	//Closes the claw
         if(vexControllerGet(Btn8U) == 1) {
-                        driveForward(8.0)  ;}
+                        //driveForward(16.0)  ;
+                        openClaw()  ;}
+        if(vexControllerGet(Btn8D) == 1) {
+                        //driveForward(16.0)  ;
+                        closeClaw()  ;}
 
         vexLcdCode();
 
