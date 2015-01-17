@@ -287,6 +287,7 @@ void closeClaw(void)
 
 void raiseLift(int middle, int high)
 {
+    vexMotorPositionSet(motLiftOne, 0);
     while(vexMotorPositionGet(motLiftOne) < liftConstant * (middle + high))
     {
         vexMotorSet(motLiftOne,   96);
@@ -312,6 +313,7 @@ void raiseLift(int middle, int high)
 
 void lowerLift(int middle, int low)
 {
+    vexMotorPositionSet(motLiftOne, 0);
     while(vexMotorPositionGet(motLiftOne) > -1 * liftConstant * (middle + low))
     {
         vexMotorSet(motLiftOne,   -127);
@@ -333,6 +335,7 @@ void lowerLift(int middle, int low)
 
 void strafe(inch)
 {
+    vexMotorPositionSet(motBackRight, 0);
     while(vexMotorPositionGet(motBackRight) < inch * 14 / 16 * driveConstant)
     {
         vexMotorSet(motBackRight,   127);   
@@ -340,6 +343,7 @@ void strafe(inch)
         vexMotorSet(motBackLeft,   -127);   
         vexMotorSet(motFrontLeft,   127);   
     }
+    vexMotorPositionSet(motBackRight, 0);
 }
 
 /********************
