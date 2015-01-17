@@ -256,7 +256,7 @@ void pointTurnLeft(float degrees)
 void openClaw(void) 
 {
     vexMotorSet(motClaw, 63);
-   wait(100);
+    wait(200);
 }
 
 /*
@@ -267,7 +267,7 @@ void openClaw(void)
 void closeClaw(void)    
 {
     vexMotorSet(motClaw, -63);
-  // wait(100);
+    wait(200);
 }
 
 
