@@ -231,15 +231,15 @@ void pointTurnRight(void)
  *@author Annelise Comai <anneliesecomai@gmail.com>
  *@since 2014-12-21
  */
-void pointTurnLeft(void)   
+void pointTurnLeft(float degrees)   
 {
     vexMotorPositionSet(motBackRight, 0);
-    while(vexMotorPositionGet(motBackRight) > turnConstantLeft) 
+    while(vexMotorPositionGet(motBackRight) < turnConstantLeft * degrees / 90)
     {
-        vexMotorSet(motFrontLeft, 96);
-        vexMotorSet(motBackLeft, 96);
-        vexMotorSet(motFrontRight, -96);
-        vexMotorSet(motBackRight, -96);
+        vexMotorSet(motFrontLeft, 127);
+        vexMotorSet(motBackLeft, 127);
+        vexMotorSet(motFrontRight, -127);
+        vexMotorSet(motBackRight, -127);
     }
     vexMotorPositionSet(motBackRight, 0);
 }
