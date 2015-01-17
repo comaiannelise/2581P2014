@@ -321,6 +321,26 @@ void lowerLift(int middle, int low)
     }
 }
 
+/*
+*This function will move the robot sideways to the left.
+*
+*@author Annelise Comai <anneliesecomai@gmail.com>
+*@since 2015-1-17
+*
+*@param[in] inch
+*   number of inches left the robot should move.
+*/
+
+void strafe(inch)
+{
+    while(vexMotorPositionGet(motBackRight) < inch * 14 / 16 * driveConstant)
+    {
+        vexMotorSet(motBackRight,   127);   
+        vexMotorSet(motFrontRight, -127);   
+        vexMotorSet(motBackLeft,   -127);   
+        vexMotorSet(motFrontLeft,   127);   
+    }
+}
 
 /********************
 
