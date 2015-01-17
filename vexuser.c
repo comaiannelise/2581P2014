@@ -304,7 +304,7 @@ void raiseLift(int middle, int high)
 *@since 2014-12-29
 *
 *@param[in] middle
-*   Set to 1 if lift is passing through or landing at the middle lift position
+*   Set to 1 if lift is passing through or landing at the middle lift position, not if lift is currently at middle position
 *@param[in] low
     Set to 1 if lift is landing at the low lift position
 
@@ -526,10 +526,27 @@ vexOperator( void *arg )
         
 
 
-        if(vexControllerGet(Btn8U) == 1) {
-                        driveForward(8.0)  ;}
-        if(vexControllerGet(Btn8D) == 1) {
-                        pointTurnLeft(90);     }
+        if(vexControllerGet(Btn8U) == 1) 
+            {
+                        driveForward(8.0);
+              }
+        if(vexControllerGet(Btn8D) == 1) 
+            {
+                        pointTurnLeft(90);     
+            }
+        if(vexControllerGet(Btn7U) == 1)    
+             {
+                        pointTurnRight();  
+            }
+        if(vexControllerGet(Btn7D) == 1) 
+            {
+                        raiseLift(1, 0);
+            }  
+        if(vexControllerGet(Btn7L) == 1) 
+         {
+                        lowerLift(0, 1);
+         }
+
 
         vexLcdCode();
 
