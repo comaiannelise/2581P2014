@@ -523,13 +523,10 @@ vexOperator( void *arg )
 	// Must call this
 	vexTaskRegister("operator");
 
-    if (firstJumper == 0)  //If firstjumper is plugged in
-       {
         vexMotorPositionSet(motBackRight, 0);
         vexMotorPositionSet(motFrontLeft, 0);
         vexMotorPositionSet(motLiftOne, 0);
-       // driveForward(4);
-      }
+    
 	// Run until asked to terminate
 	while(!chThdShouldTerminate())
 		{
@@ -537,7 +534,7 @@ vexOperator( void *arg )
 		//int precision = 1 - vexControllerGet(Btn6U) * 0.25 - vexControllerGet(Btn6D) * 0.5;
 		
 
-		//Modifies drive base speed if certain buttons are pressed. Allows for more pewcise movement
+		//Modifies drive base speed if certain buttons are pressed. Allows for more precise movement
 		moveFunc( 	   -vexControllerGet(Ch1),	    //Strafing
 						vexControllerGet(Ch2),	    //Forward and backward movement
 						vexControllerGet(Ch4));     //Rotational and turning movement
