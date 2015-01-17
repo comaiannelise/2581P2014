@@ -189,12 +189,12 @@ void vexLcdCode()
 void driveForward(float inches)
 {
     vexMotorPositionSet(motBackRight, 0);
-    while(vexMotorPositionGet(motBackRight) < inches * driveConstant)
+    while(vexMotorPositionGet(motBackRight) < inches * 14 / 16 * driveConstant)
     {
-        vexMotorSet(motFrontLeft, -96);
-        vexMotorSet(motBackLeft, -96);
-        vexMotorSet(motFrontRight, -96);
-        vexMotorSet(motBackRight, -96);
+        vexMotorSet(motFrontLeft, -127);
+        vexMotorSet(motBackLeft, -127);
+        vexMotorSet(motFrontRight, -127);
+        vexMotorSet(motBackRight, -127);
 		vexLcdCode();
 		
     }
