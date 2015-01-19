@@ -24,7 +24,7 @@
 #include "hal.h" 		// hardware abstraction layer header
 #include "vex.h"		// vex library header
 
-#define motBackRight       kVexMotor_1      //Weirdly enough, this IME counts negative
+#define motBackRight       kVexMotor_1      
 #define motFrontRight      kVexMotor_2
 #define motLiftOne         kVexMotor_3      //Assuming that this has the only IME on the lift
 #define motLiftTwo         kVexMotor_4
@@ -81,9 +81,9 @@ static  vexMotorCfg mConfig[kVexMotorNum] = {
  //Autonomous Functions
 
 int driveConstant = 49.89;                        //number of encoder counts per inch (current calculated value shown)
-int turnConstant = -685;                          //number of encoder counts needed to turn 90 degrees  - right, at least
-int turnConstantLeft = 650;                       //number of encoder counts needed to turn 90 degrees left
-int liftConstant = 1500;  //2783;                        //number of encoder counts needed to lift the lift from one position to the next
+int turnConstant = -675;                          //number of encoder counts needed to turn 90 degrees  - right, at least
+int turnConstantLeft = 657;                       //number of encoder counts needed to turn 90 degrees left
+int liftConstant = 750;  //2783;                 //number of encoder counts needed to lift the lift from one position to the next
 bool shift = false;
 int print = 0;
 
