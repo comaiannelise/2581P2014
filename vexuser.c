@@ -19,7 +19,6 @@
  * @since 2014-12-22
  ******************************************************************************/
 #include <stdlib.h>
-
 #include "ch.h"  		// needs for all ChibiOS programs
 #include "hal.h" 		// hardware abstraction layer header
 #include "vex.h"		// vex library header
@@ -34,8 +33,13 @@
 #define motClaw            kVexMotor_8
 #define motBackLeft        kVexMotor_7
 
-#define firstJumper		  kVexDigital_1
-#define secondJumper	  kVexDigital_2
+#define firstJumper		   kVexDigital_1
+#define secondJumper	   kVexDigital_2
+
+#define sonarLeft 		   kVexSonar_1
+#define sonarRight 		   kVexSonar_2
+
+#define limitSwitch        kVexDigital_3
 
 #define PI  3.14
 
@@ -45,12 +49,12 @@
 // Digi IO configuration
 static  vexDigiCfg  dConfig[kVexDigital_Num] = {
 
-        { kVexDigital_1,    kVexSensorDigitalInput,  kVexConfigOutput,      0 },
-        { kVexDigital_2,    kVexSensorDigitalInput,  kVexConfigOutput,      0 },
+        { kVexDigital_1,    kVexSensorSonarCm,       kVexConfigSonarIn,     kVexSonar_1 },
+        { kVexDigital_2,    kVexSensorSonarCm,       kVexConfigSonarOut,    kVexSonar_1 },
         { kVexDigital_3,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
         { kVexDigital_4,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
-        { kVexDigital_5,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
-        { kVexDigital_6,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
+        { kVexDigital_5,    kVexSensorSonarCm,  	 kVexConfigSonarIn,     kVexSonar_2 },
+        { kVexDigital_6,    kVexSensorSonarCm, 	     kVexConfigSonarOut,    kVexSonar_2 },
         { kVexDigital_7,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
         { kVexDigital_8,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
         { kVexDigital_9,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
@@ -73,6 +77,7 @@ static  vexMotorCfg mConfig[kVexMotorNum] = {
 };
 
 /**
+ * @file vexuser.c
  * @brief Functions
  * @details
  * All user functions are stored here
@@ -147,7 +152,8 @@ void vexLcdCode()
     }
     else if (print == 3)
     {
-        vexLcdPrintf(1,1, "%s%d","motBackLeft: ",vexMotorPositionGet(motBackLeft));
+        vexLcdPrintf(1,1, "%s%d","Sonar: ", vexSonarGetCm(sonarLeft));
+        vexLcdPrintf(1,0, "%s%d","Sonar2: ", vexSonarGetCm(sonarRight));
     }
     else if (print == 4)
     {
@@ -526,6 +532,8 @@ vexOperator( void *arg )
         vexMotorPositionSet(motBackRight, 0);
         vexMotorPositionSet(motFrontLeft, 0);
         vexMotorPositionSet(motLiftOne, 0);
+		vexSonarStartAll();
+
     
 	// Run until asked to terminate
 	while(!chThdShouldTerminate())
