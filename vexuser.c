@@ -127,12 +127,29 @@ void go(float inches)
 
     vexMotorPositionSet(motFrontRight, 0);
 }
+*/
+bool escapeTime(void)
+{
+	if ((vexControllerGet(Btn7U) == 1) &&
+	    (vexControllerGet(Btn7D) == 1) &&
+	    (vexControllerGet(Btn8D) == 1) &&
+	    (vexControllerGet(Btn5U) == 1) &&
+	    (vexControllerGet(Btn6U) == 1))
+		{
+        vexLcdPrintf(1,1, "%s","Die!!!!!!!");
+		return true;
+		}
+	else{ 
+		return false;
+}
+}
+
 /**
  *
  *This code controls the LCD screen.
  *@author Alex Miller
  */
-void vexLcdCode()
+void vexLcdCode(void)
 {
     if (print == -1)
     {
@@ -240,7 +257,7 @@ void pointTurnRight(void)
 void pointTurnLeft(float degrees)   
 {
     vexMotorPositionSet(motBackRight, 0);
-    while(vexMotorPositionGet(motBackRight) < turnConstantLeft * degrees / 90)
+    while((vexMotorPositionGet(motBackRight) < turnConstantLeft * degrees / 90) && !(escapeTime()) )
     {
         vexMotorSet(motFrontLeft, 127);
         vexMotorSet(motBackLeft, 127);
@@ -249,52 +266,53 @@ void pointTurnLeft(float degrees)
     }
     vexMotorPositionSet(motBackRight, 0);
 }
-/*
+
+/**
  *This opens the claw when called. 
  *@since 2014-12-21
  */
-
- void wait(time)
+ void wait(float time)
  {
     chThdSleepMilliseconds(time);
  }
  
 void openClaw(void) 
 {
-    vexMotorSet(motClaw, 63);
-    wait(200);
+    vexMotorSet(motClaw, 127);
+    wait(250);
+    vexMotorSet(motClaw, 0);
 }
 
-/*
+/**
  *This closes the claw when called. 
  *@since 2014-12-21
-*/ 
-
+ */
 void closeClaw(void)    
 {
-    vexMotorSet(motClaw, -63);
-    wait(200);
+    vexMotorSet(motClaw, -96);
+    wait(250);
+    vexMotorSet(motClaw, 0);
 }
 
 
 
-/*
-*This function will somehow raise the lift.
-*
-*@author Annelise Comai <anneliesecomai@gmail.com>
-*@since 2014-12-29
-*
-*@param[in] middle
-*   Set to 1 if lift is passing through or landing at the middle lift position
-*@param[in] high
-    Set to 1 if lift is landing at the high lift position
-
-*/
+/**
+ *This function will somehow raise the lift.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2014-12-29
+ *
+ *@param[in] middle
+ *   Set to 1 if lift is passing through or landing at the middle lift position
+ *@param[in] high
+ *   Set to 1 if lift is landing at the high lift position
+ *
+ */
 
 void raiseLift(int middle, int high)
 {
     vexMotorPositionSet(motLiftOne, 0);
-    while(vexMotorPositionGet(motLiftOne) < liftConstant * (middle + high))
+    while((vexMotorPositionGet(motLiftOne) < liftConstant * (middle + high)) && !(escapeTime()) )
     {
         vexMotorSet(motLiftOne,   96);
         vexMotorSet(motLiftTwo,   96);
@@ -304,24 +322,35 @@ void raiseLift(int middle, int high)
     vexMotorPositionSet(motLiftOne, 0);
 }
 
-/*
-*This function will somehow lower the lift.
-*
-*@author Annelise Comai <anneliesecomai@gmail.com>
-*@since 2014-12-29
-*
-*@param[in] middle
-*   Set to 1 if lift is passing through or landing at the middle lift position, not if lift is currently at middle position
-*@param[in] low
-    Set to 1 if lift is landing at the low lift position
-
-*/
+/**
+ *This function will somehow lower the lift.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2014-12-29
+ *
+ *@param[in] middle
+ *   Set to 1 if lift is passing through or landing at the middle lift position, not if lift is currently at middle position
+ *@param[in] low
+ *   Set to 1 if lift is landing at the low lift position
+ *
+ */
 
 void lowerLift(int middle, int low)
 {
     vexMotorPositionSet(motLiftOne, 0);
-    while(vexMotorPositionGet(motLiftOne) > -1 * liftConstant * (middle + low))
+    while((vexMotorPositionGet(motLiftOne) > -1 * (10 + liftConstant) * (middle + low)) && !(escapeTime()) )
     {
+        vexMotorSet(motLiftOne,   -127);
+        vexMotorSet(motLiftTwo,   -127);
+        vexMotorSet(motLiftThree, -127);
+        vexMotorSet(motLiftFour,  -127);
+    }
+    vexMotorPositionSet(motLiftOne, 0);
+}
+void lowerLiftEasy(void)
+	{
+	while(!(vexDigitalPinGet(limitSwitch) == 0) && !(escapeTime()) )
+	{
         vexMotorSet(motLiftOne,   -127);
         vexMotorSet(motLiftTwo,   -127);
         vexMotorSet(motLiftThree, -127);
@@ -329,17 +358,17 @@ void lowerLift(int middle, int low)
     }
 }
 
-/*
-*This function will move the robot sideways to the left.
-*
-*@author Annelise Comai <anneliesecomai@gmail.com>
-*@since 2015-1-17
-*
-*@param[in] inch
-*   number of inches left the robot should move.
-*/
+/**
+ *This function will move the robot sideways to the left.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2015-1-17
+ *
+ *@param[in] inch
+ *   number of inches left the robot should move.
+ */
 
-void strafe(inch)
+void strafe(float inch)
 {
     vexMotorPositionSet(motBackRight, 0);
     while(vexMotorPositionGet(motBackRight) < inch * 14 / 16 * driveConstant)
@@ -379,8 +408,7 @@ void moveFunc(int ch1, int ch2, int ch4)
 	vexMotorSet(motFrontLeft,   ch1 - ch2 - ch4);	
 }
 
-/*
-
+/**
  *This stops all motors on the robot. 
  *
  *@author Annelise Comai <anneliesecomai@gmail.com>
@@ -399,7 +427,7 @@ void stopMotors(void)
 	vexMotorSet(motLiftFour, 0);
 }
 
-/*
+/**
  *This controls the raising and lowering of the chain lift. 
  *
  *@author Alex Miller <alexmiller965@gmail.com>
@@ -410,8 +438,7 @@ void stopMotors(void)
  *@param[in] lower
  *	Lowers the lift while assigned button is pressed
  */
-void
-liftControl(int raises, int lower)
+void liftControl(int raises, int lower)
 {
 	vexMotorSet(motLiftOne, 80 * (raises - lower));
     vexMotorSet(motLiftTwo, 80 * (raises - lower));
@@ -419,7 +446,7 @@ liftControl(int raises, int lower)
     vexMotorSet(motLiftFour, 80 * (raises - lower));
 }
 
-/*
+/**
  *This function controls the opening and closing of the claw.
  *
  *@author Annelise Comai <anneliesecomai@gmail.com>
@@ -435,11 +462,10 @@ liftControl(int raises, int lower)
 void clawControl(int open,int close)
 {
 vexMotorSet(motClaw, 127 * (open - close));
-//wait(100);   //May not need to be here (except possibly for auton) if previous line works
 }
 
 
-/*
+/**
  *This function controls the extending and retracting  of the foot.
  *
  *@author Annelise Comai <anneliesecomai@gmail.com>
