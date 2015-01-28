@@ -161,7 +161,7 @@ void vexLcdCode(void)
     else {shift = false;}
 }
     
-/*
+/**
  *This function also moves the robot forward.
  *
  *@author Annelise Comai <anneliesecomai@gmail.com>
