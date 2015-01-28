@@ -117,11 +117,11 @@ void vexLcdCode(void)
 {
     if (print == -1)
     {
-        print = 0;
+        print = 4;
     }
     else if(print == 0)
     {
-        vexLcdPrintf(1,1, "%s%d","motBackRight: ",vexMotorPositionGet(motBackRight));
+        vexLcdPrintf(1,1, "%s%d","Button: ",vexDigitalPinGet(limitSwitch));
     }
     else if (print == 1)
     {
