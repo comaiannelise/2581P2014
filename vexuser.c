@@ -191,27 +191,58 @@ void driveForward(float inches)
         vexMotorSet(motBackRight, 0);
     vexMotorPositionSet(motBackRight, 0);
 }
-/*
+
+
+void driveBackward(float inches)
+{
+    vexMotorPositionSet(motBackRight, 0);
+	int targetDistance = inches * 14 / 16 * -driveConstant;
+	float pValue = 1;
+	int error;
+    while((vexMotorPositionGet(motBackRight) > targetDistance) && !(escapeTime()) )
+    {
+		error = targetDistance + vexMotorPositionGet(motBackRight);
+        vexMotorSet(motFrontLeft, error * pValue);
+        vexMotorSet(motBackLeft, error * pValue);
+        vexMotorSet(motFrontRight, error * pValue);
+        vexMotorSet(motBackRight, error * pValue);
+		vexLcdCode();
+		
+    }
+        vexMotorSet(motFrontLeft, 0);
+        vexMotorSet(motBackLeft, 0);
+        vexMotorSet(motFrontRight, 0);
+        vexMotorSet(motBackRight, 0);
+    vexMotorPositionSet(motBackRight, 0);
+}
+
+
+
+/**
  *This function does a point turn to the left. A point
  *turn keeps the robot in one place while it turns.
  *
  *@author Annelise Comai <anneliesecomai@gmail.com>
  *@since 2014-12-21
  */
-void pointTurnRight(void)    
+void pointTurnRight(float degrees)    
 {
     vexMotorPositionSet(motBackRight, 0);
-    while(vexMotorPositionGet(motBackRight) > turnConstant)    
+	int targetTurn = turnConstant * degrees / 90;
+	float pValue = 1;
+	int error;
+    while((vexMotorPositionGet(motBackRight) > targetTurn) && !(escapeTime()) )    
     {
-        vexMotorSet(motFrontLeft, -96);
-        vexMotorSet(motBackLeft, -96);
-        vexMotorSet(motFrontRight, 96);
-        vexMotorSet(motBackRight, 96);
+		error = targetTurn - vexMotorPositionGet(motBackRight);
+        vexMotorSet(motFrontLeft, -error * pValue);
+        vexMotorSet(motBackLeft, -error * pValue);
+        vexMotorSet(motFrontRight, error * pValue);
+        vexMotorSet(motBackRight, error * pValue);
     }
     vexMotorPositionSet(motBackRight, 0);
 }
 
-/*
+/**
  *This function does a point turn to the right. A point
  *turn keeps the robot in one place while it turns.
  *
