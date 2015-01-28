@@ -169,19 +169,23 @@ void vexLcdCode(void)
  *
  *@param[in] inches
  *  This is the number of inches the robot is supposed to move forward
- @param driveConstant
-    This is the number of encoder counts the encoder measures when the robot goes one inch
+ *@param driveConstant
+ *   This is the number of encoder counts the encoder measures when the robot goes one inch
  */
 
 void driveForward(float inches)
 {
     vexMotorPositionSet(motBackRight, 0);
-    while(vexMotorPositionGet(motBackRight) < inches * 14 / 16 * driveConstant)
+	int targetDistance = inches * 14 / 16 * driveConstant;
+	float pValue = 0.5;
+	int error;
+    while((vexMotorPositionGet(motBackRight) < targetDistance) && !(escapeTime()) )
     {
-        vexMotorSet(motFrontLeft, -127);
-        vexMotorSet(motBackLeft, -127);
-        vexMotorSet(motFrontRight, -127);
-        vexMotorSet(motBackRight, -127);
+		error = targetDistance - vexMotorPositionGet(motBackRight);
+        vexMotorSet(motFrontLeft,- error * pValue);
+        vexMotorSet(motBackLeft, -error * pValue);
+        vexMotorSet(motFrontRight,-error * pValue);
+        vexMotorSet(motBackRight,-error * pValue);
 		vexLcdCode();
 		
     }
