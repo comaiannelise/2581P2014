@@ -531,9 +531,43 @@ msg_t vexAutonomous( void *arg )
 
     // Must call this
     vexTaskRegister("auton");
+             //Sonar values: 72 for sonar2, 13 for sonar
+                //closeClaw();
+                //puts cube on skyrise
+                closeClaw();
+                raiseLift(1, 0);
+                lowerLift(0, 1);
+                driveBackward(6);
+            /*  raiseLift(1, 0);
+              pointTurnLeft(40);
+              driveForward(6);
+              lowerLiftEasy();
+              driveBackward(8);
+                //moves to skyrise piece
+                pointTurnLeft(60);
+                driveForward(15.5);
+                pointTurnLeft(135);
+                driveForward(4);
+                closeClaw();
+                raiseLift(1, 0);
+                pointTurnLeft(115);
+                driveForward(3);
+                lowerLiftEasy();
+                openClaw();
+                //
 
-        driveForward(24);
-        openClaw();
+              //  auton 2 
+              //place robot on tile next to small post
+
+
+                closeClaw();
+                raiseLift(1, 0);
+                driveForward(2);
+                lowerLift(0, 1);
+                openClaw();
+
+                */
+
         
     while(1)
         {
