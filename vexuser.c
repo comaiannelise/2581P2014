@@ -252,16 +252,42 @@ void pointTurnRight(float degrees)
 void pointTurnLeft(float degrees)   
 {
     vexMotorPositionSet(motBackRight, 0);
+	int targetTurn = turnConstantLeft * degrees / 90;
+	float pValue = 1;
+	int error;
     while((vexMotorPositionGet(motBackRight) < turnConstantLeft * degrees / 90) && !(escapeTime()) )
     {
-        vexMotorSet(motFrontLeft, 127);
-        vexMotorSet(motBackLeft, 127);
-        vexMotorSet(motFrontRight, -127);
-        vexMotorSet(motBackRight, -127);
+		error = targetTurn - vexMotorPositionGet(motBackRight);
+        vexMotorSet(motFrontLeft, error * pValue);
+        vexMotorSet(motBackLeft, error * pValue);
+        vexMotorSet(motFrontRight, -error * pValue);
+        vexMotorSet(motBackRight, -error * pValue);
     }
     vexMotorPositionSet(motBackRight, 0);
 }
 
+/**
+ *This function will move the robot sideways to the left.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2015-1-17
+ *
+ *@param[in] inch
+ *   number of inches left the robot should move.
+ */
+
+void strafeLeft(float inch)
+{
+    vexMotorPositionSet(motBackRight, 0);
+    while(vexMotorPositionGet(motBackRight) < inch * 14 / 16 * driveConstant)
+    {
+        vexMotorSet(motBackRight,   127);   
+        vexMotorSet(motFrontRight, -127);   
+        vexMotorSet(motBackLeft,   -127);   
+        vexMotorSet(motFrontLeft,   127);   
+    }
+    vexMotorPositionSet(motBackRight, 0);
+}
 /**
  *This opens the claw when called. 
  *@since 2014-12-21
