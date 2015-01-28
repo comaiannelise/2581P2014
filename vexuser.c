@@ -542,30 +542,10 @@ vexOperator( void *arg )
 		
         clawControl(	vexControllerGet(Btn8R),	//Opens the claw
 						vexControllerGet(Btn8L)	);	//Closes the claw
-        
-
-
-        if(vexControllerGet(Btn8U) == 1) 
-            {
-                        driveForward(8.0);
-              }
-        if(vexControllerGet(Btn8D) == 1) 
-            {
-                        pointTurnLeft(90);     
-            }
-        if(vexControllerGet(Btn7U) == 1)    
-             {
-                        pointTurnRight();  
-            }
-        if(vexControllerGet(Btn7D) == 1) 
-            {
-                        raiseLift(1, 0);
-            }  
-        if(vexControllerGet(Btn7L) == 1) 
-         {
-                        lowerLift(0, 1);
-         }
-
+       if(vexControllerGet(Btn8U) == 1) 
+          {
+              driveForward(12);
+                }
 
         vexLcdCode();
 
