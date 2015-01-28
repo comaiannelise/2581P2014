@@ -88,46 +88,10 @@ static  vexMotorCfg mConfig[kVexMotorNum] = {
 int driveConstant = 49.89;                        //number of encoder counts per inch (current calculated value shown)
 int turnConstant = -675;                          //number of encoder counts needed to turn 90 degrees  - right, at least
 int turnConstantLeft = 657;                       //number of encoder counts needed to turn 90 degrees left
-int liftConstant = 750;  //2783;                 //number of encoder counts needed to lift the lift from one position to the next
+int liftConstant = 715;  //2783;                 //number of encoder counts needed to lift the lift from one position to the next
 bool shift = false;
 int print = 0;
 
-/*
- *This function moves the robot forward.
- *
- *@author Annelise Comai <anneliesecomai@gmail.com>
- *@since 2014-12-21
- *
- *@param[in] inches
- *  This is the number of inches the robot is supposed to move forward
- @param driveConstant
-    This is the number of encoder counts the encoder measures when the robot goes one inch
- */
-void go(float inches) 
-{
-        vexMotorSet(motFrontLeft, 96);
-        vexMotorSet(motBackLeft, 96);
-        vexMotorSet(motFrontRight, 96);
-        vexMotorSet(motBackRight, 96);
-
-    while(vexMotorPositionGet(motBackRight) < inches * driveConstant || vexMotorPositionGet(motBackRight) > -inches * driveConstant)    
-    {
-        vexSleep( 25 );
-        /*if (vexControllerGet(Btn8D) == 1) 
-        {
-        stopMotors();
-        }*/
-    }
-
-
-        vexMotorSet(motFrontLeft, 0);
-        vexMotorSet(motBackLeft, 0);
-        vexMotorSet(motFrontRight, 0);
-        vexMotorSet(motBackRight, 0);
-
-    vexMotorPositionSet(motFrontRight, 0);
-}
-*/
 bool escapeTime(void)
 {
 	if ((vexControllerGet(Btn7U) == 1) &&
