@@ -162,7 +162,7 @@ void vexLcdCode(void)
 }
     
 /**
- *This function also moves the robot forward.
+ *These functions move the robot forward and backward.
  *
  *@author Annelise Comai <anneliesecomai@gmail.com>
  *@since 2014-12-24
