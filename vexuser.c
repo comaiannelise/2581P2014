@@ -11,85 +11,506 @@
  * library, V 1.00.
  *
  * @author James Pearman
- * @author Michel Momeyer <strihawk1213@gmail.com>
+ * @author Alex Miller <alexmiller965@gmail.com>
+ * @author Annelise Comai <anneliesecomai@gmail.com>
  * @author Ethan Ruffing <ruffinge@mail.gvsu.edu>
+ *
  *
  * @since 2014-12-22
  ******************************************************************************/
 #include <stdlib.h>
-#include <math.h>
+#include "ch.h"         // needs for all ChibiOS programs
+#include "hal.h"        // hardware abstraction layer header
+#include "vex.h"        // vex library header
 
-#include "ch.h"  		// needs for all ChibiOS programs
-#include "hal.h" 		// hardware abstraction layer header
-#include "vex.h"		// vex library header
-#include "vexuser.h"    // function declarations
-#include "apollo.h"     // the library that includes the apollo debug window in screen
-#include "smartmotor.h" // the library for smart motors
+#define motBackRight       kVexMotor_1      
+#define motFrontRight      kVexMotor_2
+#define motLiftOne         kVexMotor_3      //Assuming that this has the only IME on the lift
+#define motLiftTwo         kVexMotor_4
+#define motLiftThree       kVexMotor_5
+#define motLiftFour        kVexMotor_10
+#define motFrontLeft       kVexMotor_6
+#define motClaw            kVexMotor_8
+#define motBackLeft        kVexMotor_7
 
-//Motors Declaration
+#define firstJumper        kVexDigital_1
+#define secondJumper       kVexDigital_2
 
-#define BASE_NW  kVexMotor_2  //Front Left Drive Motor
-#define BASE_NE  kVexMotor_3  //Front Right Drive Motor
-#define BASE_SE  kVexMotor_4  //Back Right Drive Motor
-#define BASE_SW  kVexMotor_1  //Back Left Drive Motor
+#define sonarLeft          kVexSonar_1
+#define sonarRight         kVexSonar_2
 
-#define LIFT_1   kVexMotor_7  //Front Left Lift Motor
-#define LIFT_2   kVexMotor_8  //Front Right Lift Motor
-#define LIFT_3   kVexMotor_9 //Upper Lift Motor
+#define limitSwitch        kVexDigital_3
+
+#define PI  3.14
 
 
-#define SHUTTLE  kVexMotor_5  //controls claw shuttle
-#define CLAW     kVexMotor_6  //actuates claw
 
-//Other Preprocessor Declaration
-
- #define PI (3.14159265359)
- #define wheelConstant (1)
 
 // Digi IO configuration
 static  vexDigiCfg  dConfig[kVexDigital_Num] = {
-        { kVexDigital_1,    kVexSensorQuadEncoder,   kVexConfigQuadEnc1,    kVexQuadEncoder_1 },
-        { kVexDigital_2,    kVexSensorQuadEncoder,   kVexConfigQuadEnc2,    kVexQuadEncoder_1 },
-        { kVexDigital_3,    kVexSensorQuadEncoder,   kVexConfigQuadEnc1,    kVexQuadEncoder_2 },
-        { kVexDigital_4,    kVexSensorQuadEncoder,   kVexConfigQuadEnc2,    kVexQuadEncoder_2 },
-        { kVexDigital_5,    kVexSensorQuadEncoder,   kVexConfigQuadEnc1,    kVexQuadEncoder_3 },
-        { kVexDigital_6,    kVexSensorQuadEncoder,   kVexConfigQuadEnc2,    kVexQuadEncoder_3 },
-        { kVexDigital_7,    kVexSensorQuadEncoder,   kVexConfigQuadEnc1,    kVexQuadEncoder_4 },
-        { kVexDigital_8,    kVexSensorQuadEncoder,   kVexConfigQuadEnc2,    kVexQuadEncoder_4 },
+
+        { kVexDigital_1,    kVexSensorSonarCm,       kVexConfigSonarIn,     kVexSonar_1 },
+        { kVexDigital_2,    kVexSensorSonarCm,       kVexConfigSonarOut,    kVexSonar_1 },
+        { kVexDigital_3,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
+        { kVexDigital_4,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
+        { kVexDigital_5,    kVexSensorSonarCm,       kVexConfigSonarIn,     kVexSonar_2 },
+        { kVexDigital_6,    kVexSensorSonarCm,       kVexConfigSonarOut,    kVexSonar_2 },
+        { kVexDigital_7,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
+        { kVexDigital_8,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
         { kVexDigital_9,    kVexSensorDigitalInput,  kVexConfigInput,       0 },
         { kVexDigital_10,   kVexSensorDigitalInput,  kVexConfigInput,       0 },
-        { kVexDigital_11,   kVexSensorDigitalInput,  kVexConfigInput,       0 },
-        { kVexDigital_12,   kVexSensorDigitalInput,  kVexConfigInput,       0 }
+        { kVexDigital_11,   kVexSensorDigitalInput,  kVexConfigQuadEnc1,    kVexQuadEncoder_1 },  
+        { kVexDigital_12,   kVexSensorDigitalInput,  kVexConfigQuadEnc2,    kVexQuadEncoder_1 } 
 };
 
 static  vexMotorCfg mConfig[kVexMotorNum] = {
-        { BASE_SW,      kVexMotor393T,     kVexMotorNormal,       kVexSensorQuadEncoder,        kVexQuadEncoder_4 },
-        { BASE_NW,      kVexMotor393T,     kVexMotorNormal,       kVexSensorQuadEncoder,        kVexQuadEncoder_1 },
-        { BASE_NE,      kVexMotor393T,     kVexMotorNormal,       kVexSensorQuadEncoder,        kVexQuadEncoder_2 },
-        { BASE_SE,      kVexMotor393T,     kVexMotorReversed,     kVexSensorQuadEncoder,        kVexQuadEncoder_3 },
-        { SHUTTLE,      kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_5 },
-        { CLAW,         kVexMotor393T,     kVexMotorNormal,       kVexSensorNone,               0 },
-        { LIFT_1,       kVexMotor393T,     kVexMotorReversed,     kVexSensorIME,                kImeChannel_3 },
-        { LIFT_2,       kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_4 },
-        { LIFT_3,       kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_1 },
-        { kVexMotor_10, kVexMotor393T,     kVexMotorNormal,       kVexSensorIME,                kImeChannel_6 }
+        { kVexMotor_1,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_1 },
+        { kVexMotor_2,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
+        { kVexMotor_3,      kVexMotor393T,           kVexMotorNormal,       kVexSensorIME,         kImeChannel_4 },
+        { kVexMotor_4,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
+        { kVexMotor_5,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
+        { kVexMotor_6,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_3 },
+        { kVexMotor_7,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_2 },
+        { kVexMotor_8,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
+        { kVexMotor_9,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
+        { kVexMotor_10,     kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
 };
 
-// Input Variables
+/**
+ * @file vexuser.c
+ * @brief Functions
+ * @details
+ * All user functions are stored here
+ */
 
-int vertical;
-int horizontal;
-int spin;
-int liftSpeed;
-int clawPosition;
-int shuttleSpeed = 127;
+ //Autonomous Functions
 
-//Limits and Acceleration djustments
+int driveConstant = 49.89;                        //number of encoder counts per inch (current calculated value shown)
+int turnConstant = -675;                          //number of encoder counts needed to turn 90 degrees  - right, at least
+int turnConstantLeft = 657;                       //number of encoder counts needed to turn 90 degrees left
+int liftConstant = 715;  //2783;                 //number of encoder counts needed to lift the lift from one position to the next
+bool shift = false;
+int print = 0;
 
-int deadZone = 15;
-int maxAVert = 5;
-int maxAHoriz = 1;
-int maxASpin = 3;
+/**
+ *This function moves the robot forward.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2014-12-21
+ *
+ *@param[in] inches
+ *  This is the number of inches the robot is supposed to move forward
+ *@param driveConstant
+ *   This is the number of encoder counts the encoder measures when the robot goes one inch
+ */
+/*void go(float inches) 
+{
+        vexMotorSet(motFrontLeft, 96);
+        vexMotorSet(motBackLeft, 96);
+        vexMotorSet(motFrontRight, 96);
+        vexMotorSet(motBackRight, 96);
+
+    while(vexMotorPositionGet(motBackRight) < inches * driveConstant || vexMotorPositionGet(motBackRight) > -inches * driveConstant)    
+    {
+        vexSleep( 25 );
+        if (vexControllerGet(Btn8D) == 1) 
+        {
+        stopMotors();
+        }
+    }
+
+
+        vexMotorSet(motFrontLeft, 0);
+        vexMotorSet(motBackLeft, 0);
+        vexMotorSet(motFrontRight, 0);
+        vexMotorSet(motBackRight, 0);
+
+    vexMotorPositionSet(motFrontRight, 0);
+}
+*/
+bool escapeTime(void)
+{
+    if ((vexControllerGet(Btn7U) == 1) &&
+        (vexControllerGet(Btn7D) == 1) &&
+        (vexControllerGet(Btn8D) == 1) &&
+        (vexControllerGet(Btn5U) == 1) &&
+        (vexControllerGet(Btn6U) == 1))
+        {
+        vexLcdPrintf(1,1, "%s","Die!!!!!!!");
+        return true;
+        }
+    else{ 
+        return false;
+}
+}
+
+/**
+ *
+ *This code controls the LCD screen.
+ *@author Alex Miller
+ */
+void vexLcdCode(void)
+{
+    if (print == -1)
+    {
+        print = 0;
+    }
+    else if(print == 0)
+    {
+        vexLcdPrintf(1,1, "%s%d","Button: ",vexDigitalPinGet(limitSwitch));
+    }
+    else if (print == 1)
+    {
+        vexLcdPrintf(1,1, "%s%d","motLiftOne: ",vexMotorPositionGet(motLiftOne));
+    }
+    else if (print == 2)
+    {
+        vexLcdPrintf(1,1, "%s%d","motFrontLeft: ",vexMotorPositionGet(motFrontLeft));
+    }
+    else if (print == 3)
+    {
+        vexLcdPrintf(1,1, "%s%d","Sonar: ", vexSonarGetCm(sonarLeft));
+        vexLcdPrintf(1,0, "%s%d","Sonar2: ", vexSonarGetCm(sonarRight));
+    }
+    else if (print == 4)
+    {
+        print = 0;
+    }
+
+
+    if (vexLcdButtonGet(1) == kLcdButtonLeft) 
+    {
+        if(!shift)
+        {
+            print += 1;
+        }
+        shift = true;
+    }
+    else if (vexLcdButtonGet(1) == kLcdButtonRight) 
+    {
+        if(!shift)
+        {
+            print -= 1;
+        }
+        shift = true;
+    }
+    else {shift = false;}
+}
+    
+/**
+ *This function also moves the robot forward.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2014-12-24
+ *
+ *@param[in] inches
+ *  This is the number of inches the robot is supposed to move forward
+ *@param driveConstant
+ *   This is the number of encoder counts the encoder measures when the robot goes one inch
+ */
+
+void driveForward(float inches)
+{
+    vexMotorPositionSet(motBackRight, 0);
+    while((vexMotorPositionGet(motBackRight) < inches * 14 / 16 * driveConstant) && !(escapeTime()) )
+    {
+        vexMotorSet(motFrontLeft, -127);
+        vexMotorSet(motBackLeft, -127);
+        vexMotorSet(motFrontRight, -127);
+        vexMotorSet(motBackRight, -127);
+        vexLcdCode();
+        
+    }
+        vexMotorSet(motFrontLeft, 0);
+        vexMotorSet(motBackLeft, 0);
+        vexMotorSet(motFrontRight, 0);
+        vexMotorSet(motBackRight, 0);
+    vexMotorPositionSet(motBackRight, 0);
+}
+
+
+void driveBackward(float inches)
+{
+    vexMotorPositionSet(motBackRight, 0);
+    while((vexMotorPositionGet(motBackRight) > inches * 14 / 16 * -driveConstant) && !(escapeTime()))
+    {
+        vexMotorSet(motFrontLeft, 127);
+        vexMotorSet(motBackLeft, 127);
+        vexMotorSet(motFrontRight, 127);
+        vexMotorSet(motBackRight, 127);
+        vexLcdCode();
+        
+    }
+        vexMotorSet(motFrontLeft, 0);
+        vexMotorSet(motBackLeft, 0);
+        vexMotorSet(motFrontRight, 0);
+        vexMotorSet(motBackRight, 0);
+    vexMotorPositionSet(motBackRight, 0);
+}
+
+
+
+/**
+ *This function does a point turn to the left. A point
+ *turn keeps the robot in one place while it turns.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2014-12-21
+ */
+void pointTurnRight(float degrees)    
+{
+    vexMotorPositionSet(motBackRight, 0);
+    while((vexMotorPositionGet(motBackRight) > turnConstant * degrees / 90) && !(escapeTime()) )    
+    {
+        vexMotorSet(motFrontLeft, -127);
+        vexMotorSet(motBackLeft, -127);
+        vexMotorSet(motFrontRight, 127);
+        vexMotorSet(motBackRight, 127);
+    }
+    vexMotorPositionSet(motBackRight, 0);
+}
+
+/**
+ *This function does a point turn to the right. A point
+ *turn keeps the robot in one place while it turns.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2014-12-21
+ */
+void pointTurnLeft(float degrees)   
+{
+    vexMotorPositionSet(motBackRight, 0);
+    while((vexMotorPositionGet(motBackRight) < turnConstantLeft * degrees / 90) && !(escapeTime()) )
+    {
+        vexMotorSet(motFrontLeft, 127);
+        vexMotorSet(motBackLeft, 127);
+        vexMotorSet(motFrontRight, -127);
+        vexMotorSet(motBackRight, -127);
+    }
+    vexMotorPositionSet(motBackRight, 0);
+}
+
+/**
+ *This opens the claw when called. 
+ *@since 2014-12-21
+ */
+ void wait(float time)
+ {
+    chThdSleepMilliseconds(time);
+ }
+ 
+void openClaw(void) 
+{
+    vexMotorSet(motClaw, 127);
+    wait(250);
+    vexMotorSet(motClaw, 0);
+}
+
+/**
+ *This closes the claw when called. 
+ *@since 2014-12-21
+ */
+void closeClaw(void)    
+{
+    vexMotorSet(motClaw, -96);
+    wait(250);
+    vexMotorSet(motClaw, 0);
+}
+
+
+
+/**
+ *This function will somehow raise the lift.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2014-12-29
+ *
+ *@param[in] middle
+ *   Set to 1 if lift is passing through or landing at the middle lift position
+ *@param[in] high
+ *   Set to 1 if lift is landing at the high lift position
+ *
+ */
+
+void raiseLift(int middle, int high)
+{
+    vexMotorPositionSet(motLiftOne, 0);
+    while((vexMotorPositionGet(motLiftOne) < liftConstant * (middle + high)) && !(escapeTime()) )
+    {
+        vexMotorSet(motLiftOne,   96);
+        vexMotorSet(motLiftTwo,   96);
+        vexMotorSet(motLiftThree, 96);
+        vexMotorSet(motLiftFour,  96);
+    }
+    vexMotorPositionSet(motLiftOne, 0);
+}
+
+/**
+ *This function will somehow lower the lift.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2014-12-29
+ *
+ *@param[in] middle
+ *   Set to 1 if lift is passing through or landing at the middle lift position, not if lift is currently at middle position
+ *@param[in] low
+ *   Set to 1 if lift is landing at the low lift position
+ *
+ */
+
+void lowerLift(int middle, int low)
+{
+    vexMotorPositionSet(motLiftOne, 0);
+    while((vexMotorPositionGet(motLiftOne) > -1 * (10 + liftConstant) * (middle + low)) && !(escapeTime()) )
+    {
+        vexMotorSet(motLiftOne,   -127);
+        vexMotorSet(motLiftTwo,   -127);
+        vexMotorSet(motLiftThree, -127);
+        vexMotorSet(motLiftFour,  -127);
+    }
+    vexMotorPositionSet(motLiftOne, 0);
+}
+void lowerLiftEasy(void)
+    {
+    while(!(vexDigitalPinGet(limitSwitch) == 0) && !(escapeTime()) )
+    {
+        vexMotorSet(motLiftOne,   -127);
+        vexMotorSet(motLiftTwo,   -127);
+        vexMotorSet(motLiftThree, -127);
+        vexMotorSet(motLiftFour,  -127);
+    }
+}
+
+/**
+ *This function will move the robot sideways to the left.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2015-1-17
+ *
+ *@param[in] inch
+ *   number of inches left the robot should move.
+ */
+
+void strafe(float inch)
+{
+    vexMotorPositionSet(motBackRight, 0);
+    while(vexMotorPositionGet(motBackRight) < inch * 14 / 16 * driveConstant)
+    {
+        vexMotorSet(motBackRight,   127);   
+        vexMotorSet(motFrontRight, -127);   
+        vexMotorSet(motBackLeft,   -127);   
+        vexMotorSet(motFrontLeft,   127);   
+    }
+    vexMotorPositionSet(motBackRight, 0);
+}
+
+
+
+
+//Driver Period Functions
+
+
+
+/**
+ *This function uses analog joysticks to drive the robot. 
+ *
+ *@author Alex Miller <alexmiller965@gmail.com>
+ *@since 2014-12-21
+ *
+ *@param[in] ch1 
+ *  Controls strafing on the x-axis
+ *@param[in] ch2
+ *  Controls forward and backward movement; y axis
+ *@param[in] ch4
+ *  Controls rotation around the z-axis. 
+ */
+void moveFunc(int ch1, int ch2, int ch4) 
+{
+    vexMotorSet(motBackRight,   ch1 - ch2 + ch4);   
+    vexMotorSet(motFrontRight, -ch1 - ch2 + ch4);   
+    vexMotorSet(motBackLeft,   -ch1 - ch2 - ch4);   
+    vexMotorSet(motFrontLeft,   ch1 - ch2 - ch4);   
+}
+
+/**
+ *This stops all motors on the robot. 
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2014-12-21
+ */
+void stopMotors(void)   
+{
+    vexMotorSet(motClaw, 0);
+    vexMotorSet(motFrontRight, 0);
+    vexMotorSet(motBackRight, 0);
+    vexMotorSet(motFrontLeft, 0);
+    vexMotorSet(motFrontRight, 0);
+    vexMotorSet(motLiftOne, 0);
+    vexMotorSet(motLiftTwo, 0);
+    vexMotorSet(motLiftThree, 0);
+    vexMotorSet(motLiftFour, 0);
+}
+
+/**
+ *This controls the raising and lowering of the chain lift. 
+ *
+ *@author Alex Miller <alexmiller965@gmail.com>
+ *@since 2014-12-29
+ *
+ *@param[in] raises 
+ *  Raises the lift while assigned button is pressed
+ *@param[in] lower
+ *  Lowers the lift while assigned button is pressed
+ */
+void liftControl(int raises, int lower)
+{
+    vexMotorSet(motLiftOne, 80 * (raises - lower));
+    vexMotorSet(motLiftTwo, 80 * (raises - lower));
+    vexMotorSet(motLiftThree, 80 * (raises - lower));
+    vexMotorSet(motLiftFour, 80 * (raises - lower));
+}
+
+/**
+ *This function controls the opening and closing of the claw.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2014-12-21
+ *
+ *@param[in] open
+ *  Opens up the claw when button is pressed
+ *@param[in] close
+ *  Closes the claw when button is pressed
+ */
+
+ 
+void clawControl(int open,int close)
+{
+vexMotorSet(motClaw, 127 * (open - close));
+}
+
+
+/**
+ *This function controls the extending and retracting  of the foot.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2014-12-21
+ *
+ *@param[in] extend 
+ *  Extends the foot when assigned button is pressed
+ *@param[in] retract
+ *  Retracts the foot when assigned button is pressed
+ */
+void footControl(int extend, int retract )
+{
+    if(extend == 1)
+    {
+    vexDigitalPinSet(1, kVexDigitalHigh);
+    }
+    else if(retract == 1)   
+    {
+    vexDigitalPinSet(1, kVexDigitalLow);
+    }
+}
 
 /**
  * @brief User setup
@@ -98,20 +519,20 @@ int maxASpin = 3;
  */
 void vexUserSetup()
 {
-	vexDigitalConfigure( dConfig, DIG_CONFIG_SIZE( dConfig ) );
-	vexMotorConfigure( mConfig, MOT_CONFIG_SIZE( mConfig ) );
+    vexDigitalConfigure( dConfig, DIG_CONFIG_SIZE( dConfig ) );
+    vexMotorConfigure( mConfig, MOT_CONFIG_SIZE( mConfig ) );
 }
 
 /**
- * @brief User initialize
- * @details
+ *  @brief User initialize
+ *  @details
  *  This function is called after all setup is complete and communication has
  *  been established with the master processor.
  *  Start other tasks and initialize user variables here
  */
 void vexUserInit()
 {
-
+     vexMotorPositionSet(motBackRight, 0);
 }
 
 /**
@@ -119,18 +540,60 @@ void vexUserInit()
  * @details
  *  This thread is started when the autonomous period is started
  */
+
+
+
+
+
 msg_t vexAutonomous( void *arg )
 {
     (void)arg;
 
     // Must call this
     vexTaskRegister("auton");
+             //Sonar values: 72 for sonar2, 13 for sonar
+                //closeClaw();
+                //puts cube on skyrise
+                closeClaw();
+                raiseLift(1, 0);
+                lowerLift(0, 1);
+                driveBackward(6);
+            /*  raiseLift(1, 0);
+              pointTurnLeft(40);
+              driveForward(6);
+              lowerLiftEasy();
+              driveBackward(8);
+                //moves to skyrise piece
+                pointTurnLeft(60);
+                driveForward(15.5);
+                pointTurnLeft(135);
+                driveForward(4);
+                closeClaw();
+                raiseLift(1, 0);
+                pointTurnLeft(115);
+                driveForward(3);
+                lowerLiftEasy();
+                openClaw();
+                //
 
+              //  auton 2 
+              //place robot on tile next to small post
+
+
+                closeClaw();
+                raiseLift(1, 0);
+                driveForward(2);
+                lowerLift(0, 1);
+                openClaw();
+
+                */
+
+        
     while(1)
-    {
+        {
         // Don't hog cpu
         vexSleep( 25 );
-    }
+        }
 
     return (msg_t)0;
 }
@@ -141,140 +604,60 @@ msg_t vexAutonomous( void *arg )
  * @details
  *  This thread is started when the driver control period is started
  */
-msg_t vexOperator( void *arg )
+msg_t
+vexOperator( void *arg )
 {
-	(void)arg;
 
-	// Must call this
-	vexTaskRegister("operator");
+    (void)arg;
 
-	// Run until asked to terminate
-	while(!chThdShouldTerminate())
-	{
+    // Must call this
+    vexTaskRegister("operator");
 
-        updateInput();
-        setMotors();
+        vexMotorPositionSet(motBackRight, 0);
+        vexMotorPositionSet(motFrontLeft, 0);
+        vexMotorPositionSet(motLiftOne, 0);
+        vexSonarStartAll();
 
-        //Temporary Shuttle Code
-        if(vexControllerGet(Btn6U))
-        {
-            vexMotorSet(SHUTTLE,shuttleSpeed);
-        }
-        else if(vexControllerGet(Btn6D))
-        {
-            vexMotorSet(SHUTTLE,-shuttleSpeed);
-        }
-        else
-        {
-            vexMotorSet(SHUTTLE,0);
-        }
-
-		// Don't hog cpu
-		vexSleep( 25 );
-	}
-
-	return (msg_t)0;
-}
-
-/*
- * This function determines and returns an acceptable increment to the given 
- *     power level based on user input.
- */
-int getPowerIncrement(int oldValue, int input, int deadZone, int maxAcceleration)
-{
-    if(input > deadZone || input < -deadZone)
-    {
-        if(input > oldValue + maxAcceleration) 
-        {
-            return maxAcceleration;
-        }
-        else if(input < oldValue - maxAcceleration) 
-        {
-            return -maxAcceleration;
-        }
-        return input;
-    }
-    return -oldValue;
-}
-
-/*
- * This function takes the controller input and modify values for use.
- */
- void updateInput(void)
- {
-    //Movement input adjusted for deadzone and maximum acceleration
-    vertical += getPowerIncrement(vertical,vexControllerGet(Ch3),deadZone,maxAVert);
-    horizontal += getPowerIncrement(horizontal,vexControllerGet(Ch4),deadZone,maxAHoriz);
-    spin += getPowerIncrement(spin,vexControllerGet(Ch1),deadZone,maxASpin);
     
-    //Lift input adjusted for deadzone FIX
-    //liftSpeed += getPowerIncrement(liftSpeed,vexControllerGet(Ch2),deadZone,liftSpeed - vexControllerGet(Ch2));
+    // Run until asked to terminate
+    while(!chThdShouldTerminate())
+        {
 
-    if(vexControllerGet(Ch2) > deadZone || vexControllerGet(Ch2) < -deadZone)
-    {
-        liftSpeed = vexControllerGet(Ch2);
-    }
-    else
-    {
-        liftSpeed = 0;
-    }
+        //int precision = 1 - vexControllerGet(Btn6U) * 0.25 - vexControllerGet(Btn6D) * 0.5;
+        
+
+        //Modifies drive base speed if certain buttons are pressed. Allows for more precise movement
+        moveFunc(      -vexControllerGet(Ch1),      //Strafing
+                        vexControllerGet(Ch2),      //Forward and backward movement
+                        vexControllerGet(Ch4));     //Rotational and turning movement
+        //Other Movement
+        liftControl(    vexControllerGet(Btn5U),        //Lifts the lift
+                        vexControllerGet(Btn5D) );      //Lowers the lift
+        
+        clawControl(    vexControllerGet(Btn8R),    //Opens the claw
+                        vexControllerGet(Btn8L) );  //Closes the claw
+    
+       if(vexControllerGet(Btn8U) == 1) 
+          {
+            raiseLift(1, 0);
+            pointTurnLeft(40);
+            driveForward(6);
+            lowerLiftEasy();
+            driveBackward(8);
+            }
 
 
-    //Add Claw and Shuttle input modifying code goes here...
+        vexLcdCode();
 
- }
 
-/*
- * This function sets all the motors for driver control based.
- * 
- */
-void setMotors(void)
-{
-    //Setting Base Drive Motors
-    vexMotorSet(BASE_NW, spin + vertical + horizontal);
-    vexMotorSet(BASE_NE, spin - vertical + horizontal);
-    vexMotorSet(BASE_SE, spin - vertical - horizontal);
-    vexMotorSet(BASE_SW, spin + vertical - horizontal);
+        /*
+        footControl(    vexControllerGet(Btn8L),    //Extends the foot
+                        vexControllerGet(Btn8R) );  //Retracts the foot
+        */
 
-    //Setting Lift Motors
-    vexMotorSet(LIFT_1,liftSpeed);
-    vexMotorSet(LIFT_2,liftSpeed);
-    vexMotorSet(LIFT_3,liftSpeed);
+        // Don't hog cpu
+        vexSleep( 25 );
+        }
 
-    //Additional lift motors go here
-
-    //Add Claw and Shuttle motor code here...
-
+    return (msg_t)0;
 }
-
-/*
- * This function drives forward a certain distance autonomously.
- */
-void setAutonMotor(int motor, int dist, int speed)
- {
-    //Convert distance from feet to encoder counts
-    dist *= wheelConstant;
-
-    //Set motor to speed
-    vexMotorSet(motor,speed);
-
-    //Checks which direction the motor is going
-    if(vexMotorDirectionGet(motor))
-    {
-        //Determine when to stop
-        if(vexMotorPositionGet(motor) > dist)
-        {
-            //Stop the motor
-            vexMotorSet(motor,0); 
-        }
-    }
-    else
-    {
-        //Determine when to stop
-        if(vexMotorPositionGet(motor) < -dist)
-        {
-            //Stop the motor
-            vexMotorSet(motor,0);
-        }
-    }
- }
