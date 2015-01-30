@@ -1,10 +1,10 @@
 /*******************************************************************************
  * @mainpage
- * This is the program for the BCAMSC Robotics Team 2581B 2014 competition
+ * This is the program for the BCAMSC Robotics Team 2581P 2014 competition
  * robot.
  *
  * @details
- * This program is the primary file for the BCAMSC Robotics Team 2581B program
+ * This program is the primary file for the BCAMSC Robotics Team 2581P program
  * for the 2014-2015 school year.
  *
  * This program is based on a template by James Pearman in his "C on Vex"
