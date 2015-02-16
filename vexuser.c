@@ -15,36 +15,36 @@
  * @author Annelise Comai <anneliesecomai@gmail.com>
  * @author Ethan Ruffing <ruffinge@mail.gvsu.edu>
  *
- *
  * @since 2014-12-22
  ******************************************************************************/
 #include <stdlib.h>
 #include "ch.h"         // needs for all ChibiOS programs
 #include "hal.h"        // hardware abstraction layer header
 #include "vex.h"        // vex library header
+#include "robotc_glue.h"
 
-#define motBackRight       kVexMotor_1      
-#define motFrontRight      kVexMotor_2
-#define motLiftOne         kVexMotor_3      //Assuming that this has the only IME on the lift
-#define motLiftTwo         kVexMotor_4
-#define motLiftThree       kVexMotor_5
-#define motLiftFour        kVexMotor_10
-#define motFrontLeft       kVexMotor_6
-#define motClaw            kVexMotor_8
-#define motBackLeft        kVexMotor_7
+// These alias the motor ports to what the motor does on the robot.
+// Drive Base Motors
+#define MOT_BACK_RIGHT       kVexMotor_1      
+#define MOT_FRONT_RIGHT      kVexMotor_2
+#define MOT_FRONT_LEFT       kVexMotor_6
+#define MOT_BACK_LEFT        kVexMotor_7
+// Chain Lift Motors
+#define MOT_LIFT_ONE         kVexMotor_3      
+#define MOT_LIFT_TWO         kVexMotor_4
+#define MOT_LIFT_THREE       kVexMotor_5
+#define MOT_LIFT_FOUR        kVexMotor_10
+// Claw motor and the lift the claw is chained to.
+#define MOT_CLAW             kVexMotor_8
+#define MOT_CLAW_LIFT        kVexMotor_9
 
-#define firstJumper        kVexDigital_1
-#define secondJumper       kVexDigital_2
+// Autonmous Jumpers
+#define JUMPER_ONE        kVexDigital_1
+#define JUMPER_TWO        kVexDigital_2
 
-#define sonarLeft          kVexSonar_1
-#define sonarRight         kVexSonar_2
-
-#define limitSwitch        kVexDigital_3
-
-#define PI  3.14
-
-
-
+// Ultrasonic sensor used for preauton positioning
+#define SONAR_LEFT          kVexSonar_1
+#define SONAR_RIGHT         kVexSonar_2
 
 // Digi IO configuration
 static  vexDigiCfg  dConfig[kVexDigital_Num] = {
