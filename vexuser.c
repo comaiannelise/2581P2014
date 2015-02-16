@@ -62,19 +62,76 @@ static  vexDigiCfg  dConfig[kVexDigital_Num] = {
         { kVexDigital_11,   kVexSensorDigitalInput,  kVexConfigQuadEnc1,    kVexQuadEncoder_1 },  
         { kVexDigital_12,   kVexSensorDigitalInput,  kVexConfigQuadEnc2,    kVexQuadEncoder_1 } 
 };
+/*
+ * General Guide for how reversing is set up.
+ * Positive values go forward on a drive base
+ * Up on a lift system.
+ * Open on a claw or intake mechanism.
+ * Motors are reversed to match this idea.
+ */
 
 static  vexMotorCfg mConfig[kVexMotorNum] = {
-        { kVexMotor_1,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_1 },
-        { kVexMotor_2,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_3,      kVexMotor393T,           kVexMotorNormal,       kVexSensorIME,         kImeChannel_4 },
-        { kVexMotor_4,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_5,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
-        { kVexMotor_6,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_3 },
-        { kVexMotor_7,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_2 },
+        { kVexMotor_1,      kVexMotor393T,           kVexMotorNormal,       kVexSensorIME,         kImeChannel_1 },
+        { kVexMotor_2,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
+        { kVexMotor_3,      kVexMotor393T,           kVexMotorReversed,     kVexSensorIME,         kImeChannel_3 },
+        { kVexMotor_4,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
+        { kVexMotor_5,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
+        { kVexMotor_6,      kVexMotor393T,           kVexMotorNormal,       kVexSensorIME,         0 },
+        { kVexMotor_7,      kVexMotor393T,           kVexMotorNormal,       kVexSensorIME,         kImeChannel_2 },
         { kVexMotor_8,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
-        { kVexMotor_9,      kVexMotor393T,           kVexMotorReversed,     kVexSensorNone,        0 },
+        { kVexMotor_9,      kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
         { kVexMotor_10,     kVexMotor393T,           kVexMotorNormal,       kVexSensorNone,        0 },
 };
+
+// Autonmous Constants for unit conversion.
+const int DRIVE_CONSTANT = 39.5;   //Encoder to inch
+const int TURN_CONSTANT = -675;    //Encoder to degree
+const int LIFT_CONSTANT = 300;     //Encoder to pseudounits
+
+
+// Look Up Table for Motor Values
+// Used for the purpose of linearzing motor speed.
+const unsigned int TRUESPEED[128] = {
+	0, 0, 0, 0, 0, 0, 0, 0, 19,20,
+	20,21,21,21,22,22,22,23,24,24,
+	25,25,25,25,26,27,27,28,28,28,
+	28,29,30,30,30,31,31,32,32,32,
+	33,33,34,34,35,35,35,36,36,37,
+	37,37,37,38,38,39,39,39,40,40,
+	41,41,42,42,43,44,44,45,45,46,
+	46,47,47,48,48,49,50,50,51,52,
+	52,53,54,55,56,57,57,58,59,60,
+	61,62,63,64,65,66,67,67,68,70,
+	71,72,72,73,74,76,77,78,79,79,
+	80,81,83,84,84,86,86,87,87,88,
+	88,89,89,90,127,127,127
+};
+// Important Utility Functions
+
+//Returns the sign of a value
+int signOf(int value)
+{
+	if (value >= 0) return 1;
+	else return -1;
+}
+//Takes the motor input and linearizes it
+void motorSet(int motor,int power)
+{
+	//makes sure that the motors are never being set to more or less than +-127
+	if (power > 127) power = 127;
+	if (power < -127) power = -127;
+
+	//Abs values are so that the function/motor speed retains its sign (since TRUESPEED values are all positive)
+	//The "- 1" is to match the code to the array
+	vexMotorSet(motor,signOf(power) * TRUESPEED[abs(power) - 1]);
+}
+
+//Function caps off the integral error so that the error will never be more than maxValue - prevents robot from
+//trying to compensate for impossible amounts of error
+float cap(float value, float maxValue){
+	if (abs(value) > abs(maxValue)) return signOf(value) * abs(maxValue);
+	else return value;
+}
 
 /**
  * @file vexuser.c
