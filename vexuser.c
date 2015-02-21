@@ -882,55 +882,107 @@ void vexUserInit()
  * @details
  *  This thread is started when the autonomous period is started
  */
-
-
-
-
-
+ 
 msg_t vexAutonomous( void *arg )
 {
     (void)arg;
 
     // Must call this
     vexTaskRegister("auton");
-             //Sonar values: 72 for sonar2, 13 for sonar
+
+        StartTask(vexClawThread);   //Starts the claw thread
+        StartTask(vexLcdThread);    //Continues the LCD screen thread through auton
+
+    if(vexDigitalPinGet(JUMPER_ONE) == 0)
+            {
+
+                //StartTask(vexLiftThread);
+
+                //Moves parallel to skyrise
+                clawOpen = true; 
+                raiseLift(2.1);
+                goForward(-400);
+                //autonLift(3.0); 
+                //autonLift(-1.4);
+               /* autonDrive(-4.4);  
+
+                //Turn to face so over skyrise
+                autonTurn(-373);     
+                autonDrive(0.70);
+                autonLift(-1.4);
+                wait(800);
+
+                //Closes Claw
+                clawOpen = false;
+                wait(800);
+
+                //Raises Skyrise
+                autonLift(1.6);
+                wait(700);
+                
+                //Turn over base
+                autonTurn(400);
+            */
+                //StopTask(vexLiftThread);
+            }
+            else if (vexDigitalPinGet(JUMPER_ONE) == 1)
+            {
+
+            //Blue 8pt Skyrise
+            //StartTask(vexLiftThread);
+
+            clawOpen = true;
+            
+            //autonLift(2.3);
+
+            goForward(-350);
+            raiseLift(1.5);
+            pointTurnRight(580);
+            lowerLift(-1.5);
+            wait(100);
+            //goForward(175);
+            //pointTurnRight(300);
+
+            //goForward(-1);
+            //pointTurnRight(300);
+            //autonTurn(50);
+            //autonDrive(2);
+            clawOpen = false;
+
+		//if(vexDigitalPinGet(JUMPER_ONE) == 1)     //If jumper is NOT PLUGGED IN
+		//	{
+		//	}
+				//Sonar values: 72 for sonar2, 13 for sonar
                 //closeClaw();
                 //puts cube on skyrise
-                closeClaw();
-                raiseLift(1, 0);
-                lowerLift(0, 1);
-                driveBackward(6);
+        //      closeClaw();
             /*  raiseLift(1, 0);
-              pointTurnLeft(40);
-              driveForward(6);
-              lowerLiftEasy();
-              driveBackward(8);
+                pointTurnLeft(40);
+                autonDrive(6);
+  	            lowerLiftEasy();
+   	            driveBackward(8);
                 //moves to skyrise piece
                 pointTurnLeft(60);
-                driveForward(15.5);
+                autonDrive(15.5);
                 pointTurnLeft(135);
-                driveForward(4);
+                autonDrive(4);
                 closeClaw();
                 raiseLift(1, 0);
                 pointTurnLeft(115);
-                driveForward(3);
+                autonDrive(3);
                 lowerLiftEasy();
                 openClaw();
-                //
 
               //  auton 2 
               //place robot on tile next to small post
 
-
                 closeClaw();
                 raiseLift(1, 0);
-                driveForward(2);
+                autonDrive(2);
                 lowerLift(0, 1);
                 openClaw();
+           */
 
-                */
-
-        
     while(1)
         {
         // Don't hog cpu
