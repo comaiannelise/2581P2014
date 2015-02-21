@@ -11,7 +11,7 @@
  * library, V 1.00.
  *
  * @author James Pearman
- * @author Alex Miller <alexmiller965@gmail.com>
+ * @author Alex Miller <amm@albion.edu>
  * @author Annelise Comai <anneliesecomai@gmail.com>
  * @author Ethan Ruffing <ruffinge@mail.gvsu.edu>
  *
