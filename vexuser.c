@@ -871,9 +871,10 @@ void vexUserSetup()
  *  been established with the master processor.
  *  Start other tasks and initialize user variables here
  */
+
 void vexUserInit()
 {
-     vexMotorPositionSet(motBackRight, 0);
+	StartTask(vexLcdThread);      //Starts the LCD screen
 }
 
 /**
