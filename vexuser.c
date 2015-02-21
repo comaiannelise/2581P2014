@@ -39,8 +39,8 @@
 #define MOT_CLAW_LIFT        kVexMotor_9
 
 // Autonmous Jumpers
-#define JUMPER_ONE        kVexDigital_1
-#define JUMPER_TWO        kVexDigital_2
+#define JUMPER_ONE        kVexDigital_7
+#define JUMPER_TWO        kVexDigital_8
 
 // Ultrasonic sensor used for preauton positioning
 #define SONAR_LEFT          kVexSonar_1
