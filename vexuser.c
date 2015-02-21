@@ -647,16 +647,35 @@ void stopMotors(void)
  *@param[in] lower
  *  Lowers the lift while assigned button is pressed
  */
+
 void liftControl(int raises, int lower)
 {
-    vexMotorSet(motLiftOne, 80 * (raises - lower));
-    vexMotorSet(motLiftTwo, 80 * (raises - lower));
-    vexMotorSet(motLiftThree, 80 * (raises - lower));
-    vexMotorSet(motLiftFour, 80 * (raises - lower));
+    vexMotorSet(MOT_LIFT_ONE, 127 * (raises - lower));
+    vexMotorSet(MOT_LIFT_TWO, 127 * (raises - lower));
+    vexMotorSet(MOT_LIFT_THREE, 127 * (raises - lower));
+    vexMotorSet(MOT_LIFT_FOUR, 127 * (raises - lower));
 }
 
 /**
- *This function controls the opening and closing of the claw.
+*This controls the lowering and raising of the claw lift
+*
+*@author Annelise Comai <anneliesecomai@gmail.com>
+*@since 2015-01-23
+*
+*@param[in] raise
+*	Raises the claw lift while assigned button is pressed
+*@param[in] low
+*	Lowers the claw lift while assigned button is pressed
+*/
+
+void liftControlClaw(int raise, int low) 
+{
+    vexMotorSet(MOT_CLAW_LIFT, 127 * (raise - low));
+}
+
+/**
+ *This function controls the opening and closing of the claw.  Due to the addition of the new claw servo, this
+ *function is now obsolete.
  *
  *@author Annelise Comai <anneliesecomai@gmail.com>
  *@since 2014-12-21
@@ -666,35 +685,171 @@ void liftControl(int raises, int lower)
  *@param[in] close
  *  Closes the claw when button is pressed
  */
-
  
 void clawControl(int open,int close)
 {
-vexMotorSet(motClaw, 127 * (open - close));
+	vexMotorSet(MOT_CLAW, 127 * (open - close));
 }
 
+/**
+ *This task operates the LCD screen, displaying various sensor values.
+ *
+ *@author Alex Miller <amm@albion.edu>
+ *@since 2015-12-2
+ *
+*/
+
+task vexLcdThread(void *arg)
+{
+    (void)arg;
+    vexTaskRegister("lcdout");
+
+bool shift = false;
+int print = 0;
+
+    while(1)
+        {
+        //This block sets the screen that is displayed
+        if (vexLcdButtonGet(1) == kLcdButtonLeft) 
+            {
+        
+            if(!shift)
+                {
+                print += 1;
+                }
+            shift = true;
+
+            }
+        else if (vexLcdButtonGet(1) == kLcdButtonRight) 
+            {
+        
+            if(!shift)
+                {
+                print -= 1;
+                }
+            shift = true;
+
+            }
+        else {shift = false;}
+
+    //Each level of print represents a screen that could be displayed.
+
+        if (print == -1)
+            {
+            print = 0;
+            }
+
+    else if(print == 0)
+    {
+        vexLcdPrintf(1,1, "%s%d","Back Sonar: ", vexSonarGetCm(SONAR_LEFT));
+        vexLcdPrintf(1,0, "%s%d","Sonar2: ", vexSonarGetCm(SONAR_RIGHT));
+    }
+        
+    else if (print == 1)
+    {
+        vexLcdPrintf(1,1, "%s%d","MOT_LIFT_ONE: ", vexMotorPositionGet(MOT_LIFT_ONE));
+    }
+    
+    else if (print == 2)
+    {
+        vexLcdPrintf(1,1, "%s%d","MOT_BR: ", vexMotorPositionGet(MOT_BACK_RIGHT));
+        vexLcdPrintf(1,0, "%s%d","MOT_BL: ", vexMotorPositionGet(MOT_BACK_LEFT));
+    }
+    
+    else if (print == 3)
+    {
+        vexLcdPrintf(1,1, "%s%d","PT: ",vexAdcGet(0));
+    }
+    
+    else if (print == 4)
+    {
+        print = 0;
+    }
+
+        wait1Msec(25);
+    }
+
+    return (msg_t)0;
+}
 
 /**
- *This function controls the extending and retracting  of the foot.
+ *This task operates the servo motor that opens and closes the claw.
  *
- *@author Annelise Comai <anneliesecomai@gmail.com>
- *@since 2014-12-21
- *
- *@param[in] extend 
- *  Extends the foot when assigned button is pressed
- *@param[in] retract
- *  Retracts the foot when assigned button is pressed
+ *@author Alex Miller <amm@albion.edu>
+ *@since 2015-12-02
  */
-void footControl(int extend, int retract )
+
+task vexClawThread(void *arg)
 {
-    if(extend == 1)
+    (void)arg;
+    vexTaskRegister("claw");
     {
-    vexDigitalPinSet(1, kVexDigitalHigh);
+    bool toggle = false;
+
+    while(1){
+        if (vexControllerGet(Btn8R) && clawOpen){
+                if(!toggle)
+                {
+                    clawOpen = false;
+                }
+                toggle = true;
+            }
+        else if (vexControllerGet(Btn8R) && !clawOpen){
+                if(!toggle)
+                {
+                    clawOpen = true;;
+                }
+                toggle = true;
+            }
+        else {
+        toggle = false;
+        }
+
+        if (vexAdcGet(0) < 3500 && !clawOpen){
+            vexMotorSet(MOT_CLAW, -37);
+            }
+        else if (vexAdcGet(0) > 600 && clawOpen){
+            vexMotorSet(MOT_CLAW, 127);
+
+            }
+        else{
+            vexMotorSet(MOT_CLAW,0);
+            }
+        wait1Msec(25);
+        }
     }
-    else if(retract == 1)   
+
+    return (msg_t)0;
+}
+
+/**
+ *This task controls the lift. 
+ *
+ *@author Alex Miller <amm@albion.edu>
+ *@since 2015-02-19
+ */
+
+task vexLiftThread(void *arg)
+{
+    (void)arg;
+    vexTaskRegister("lift");
     {
-    vexDigitalPinSet(1, kVexDigitalLow);
+        while(!escapeTime())
+        {
+            vexMotorPositionSet(MOT_LIFT_ONE, 0);
+            while(0 != liftSetpoint && !escapeTime())
+            {
+                liftMotorSet(127 * signOf(liftSetpoint));
+                vexSleep(25);
+                if(abs(vexMotorPositionGet(MOT_LIFT_ONE)) > abs(LIFT_CONSTANT * liftSetpoint))
+                    liftSetpoint = 0;
+            }
+            wait1Msec(25);
+            liftMotorSet(0);
+        }               
     }
+
+    return (msg_t)0;
 }
 
 /**
@@ -702,10 +857,11 @@ void footControl(int extend, int retract )
  * @details
  *  The digital and motor ports can (should) be configured here.
  */
+
 void vexUserSetup()
 {
-    vexDigitalConfigure( dConfig, DIG_CONFIG_SIZE( dConfig ) );
-    vexMotorConfigure( mConfig, MOT_CONFIG_SIZE( mConfig ) );
+    vexDigitalConfigure( dConfig, DIG_CONFIG_SIZE( dConfig ) );			//Configures digital ports
+    vexMotorConfigure( mConfig, MOT_CONFIG_SIZE( mConfig ) );			//Configures motor ports
 }
 
 /**
@@ -798,47 +954,163 @@ vexOperator( void *arg )
     // Must call this
     vexTaskRegister("operator");
 
-        vexMotorPositionSet(motBackRight, 0);
-        vexMotorPositionSet(motFrontLeft, 0);
-        vexMotorPositionSet(motLiftOne, 0);
-        vexSonarStartAll();
+    vexMotorPositionSet(MOT_BACK_RIGHT, 0);
+    vexMotorPositionSet(MOT_FRONT_LEFT, 0);
+    vexMotorPositionSet(MOT_LIFT_ONE, 0);
 
-    
+    vexSonarStartAll();
+	StartTask(vexClawThread);
+    StartTask(vexLcdThread);
+
     // Run until asked to terminate
     while(!chThdShouldTerminate())
         {
-
         //int precision = 1 - vexControllerGet(Btn6U) * 0.25 - vexControllerGet(Btn6D) * 0.5;
         
-
         //Modifies drive base speed if certain buttons are pressed. Allows for more precise movement
-        moveFunc(      -vexControllerGet(Ch1),      //Strafing
-                        vexControllerGet(Ch2),      //Forward and backward movement
-                        vexControllerGet(Ch4));     //Rotational and turning movement
+        moveFunc(      -vexControllerGet(Ch1),          //Strafing
+                        vexControllerGet(Ch2),          //Forward and backward movement
+                        vexControllerGet(Ch4));         //Rotational and turning movement
         //Other Movement
-        liftControl(    vexControllerGet(Btn5U),        //Lifts the lift
-                        vexControllerGet(Btn5D) );      //Lowers the lift
+        liftControl(    vexControllerGet(Btn5U),        //Lifts the chain lift
+                        vexControllerGet(Btn5D) );      //Lowers the chain lift
+
+        liftControlClaw(vexControllerGet(Btn6D),		//Lifts the claw lift
+                        vexControllerGet(Btn6U));		//Lowers the claw lift
         
-        clawControl(    vexControllerGet(Btn8R),    //Opens the claw
-                        vexControllerGet(Btn8L) );  //Closes the claw
-    
-       if(vexControllerGet(Btn8U) == 1) 
-          {
-            raiseLift(1, 0);
-            pointTurnLeft(40);
-            driveForward(6);
-            lowerLiftEasy();
-            driveBackward(8);
+		if (vexControllerGet(Btn7U))                    //Resets lift encoder
+        	vexMotorPositionSet(MOT_LIFT_ONE,0);
+			
+        // clawControl(  	vexControllerGet(Btn8R),    //Opens the claw
+        //                  vexControllerGet(Btn8L) );  //Closes the claw
+	   
+		//Official Auton Testing Button: Btn8U
+        if (vexControllerGet(Btn8U) == 1)  
+        {
+			if(vexDigitalPinGet(JUMPER_ONE)	== 0)
+			{
+        		//StartTask(vexLiftThread);
+
+                //Moves parallel to skyrise
+    			clawOpen = true; 
+                raiseLift(2.1);
+                goForward(-400);
+       			//autonLift(3.0); 
+    			//autonLift(-1.4);
+               /* autonDrive(-4.4);  
+
+                //Turn to face so over skyrise
+    			autonTurn(-373);     
+    			autonDrive(0.70);
+    			autonLift(-1.4);
+    			wait(800);
+
+                //Closes Claw
+    			clawOpen = false;
+    			wait(800);
+
+                //Raises Skyrise
+    			autonLift(1.6);
+    			wait(700);
+    			
+                //Turn over base
+                autonTurn(400);
+            */
+    			//StopTask(vexLiftThread);
+            }
+            else if (vexDigitalPinGet(JUMPER_ONE) == 1)
+            {
+
+            //Blue 8pt Skyrise
+            // StartTask(vexLiftThread);
+
+            clawOpen = true;            
+           
+            //autonLift(2.3);
+
+            goForward(-350);
+            raiseLift(1.5);
+            pointTurnRight(580);
+            lowerLift(-1.5);
+            wait(100);
+            //goForward(175);
+          //  pointTurnRight(300);
+
+            //goForward(-1);
+            //pointTurnRight(300);
+           // autonTurn(50);
+            //autonDrive(2);
+            clawOpen = false;
+            //wait(100);
+            //autonLift(1.5);
+           // autonTurn(80);
+           // autonTurn(100);
+           // autonLift(-1.5);
+           // clawOpen = true;
+           // autonDrive(-2);
+/*
+            autonDrive(1.2);
+            autonTurn(200);
+            autonDrive(1.3);
+            clawOpen = false;   
+            wait(200);
+            autonLift(2);
+            wait(500);
+            autonDrive(-1.5);
+            autonTurn(390);
+            autonDrive(0.7);
+            autonLift(-3);
+            clawOpen = true;
+            */
+            //StopTask(vexLiftThread);
             }
 
+            else { }
+		    
+			}
 
-        vexLcdCode();
+			/* 3pt Auton
+            // sonar1 62, sonar2 19 on blue side
+			closeClaw();
+            raiseLift(6.5);
+		    pointTurnLeft(160);
+			autonDrive(3.5);
+			lowerLift(4);
+			openClaw();
+			driveBackward(7); 
 
+			skyrise unreliable
+			closeClaw();
+			raiseLift(2);
+			pointTurnLeft(60);
+			autonDrive(5);
+			lowerLift(2);
+			openClaw();
+			autonDrive(-4);
+			pointTurnLeft(50);
+			autonDrive(3.8);
+			raiseLift(1.4);
+			pointTurnLeft(65);
+			autonDrive(2);
+			closeClaw();
+			raiseLift(1.2);
+			autonDrive(-2);
+			pointTurnLeft(250);
+			autonDrive(4);
+			lowerLift(2);
 
-        /*
-        footControl(    vexControllerGet(Btn8L),    //Extends the foot
-                        vexControllerGet(Btn8R) );  //Retracts the foot
-        */
+			raiseLift(1);
+			autonDrive(4);
+			closeClaw();
+			raiseLift(1);
+			autonDrive(-2);
+			pointTurnLeft(120);	
+			autonDrive(3.5);
+			lowerLift(2);
+			openClaw();
+			autonDrive(-2);
+			openClaw();
+			*/
 
         // Don't hog cpu
         vexSleep( 25 );
