@@ -177,241 +177,349 @@ float cap(float value, float maxValue){
  * All user functions are stored here
  */
 
- //Autonomous Functions
 
-int driveConstant = 49.89;                        //number of encoder counts per inch (current calculated value shown)
-int turnConstant = -675;                          //number of encoder counts needed to turn 90 degrees  - right, at least
-int turnConstantLeft = 657;                       //number of encoder counts needed to turn 90 degrees left
-int liftConstant = 715;  //2783;                 //number of encoder counts needed to lift the lift from one position to the next
-bool shift = false;
-int print = 0;
 
 /**
- *This function moves the robot forward.
+ *This function is placed as a condition in every while loop to allow the user to escape an infinite loop.
  *
- *@author Annelise Comai <anneliesecomai@gmail.com>
- *@since 2014-12-21
- *
- *@param[in] inches
- *  This is the number of inches the robot is supposed to move forward
- *@param driveConstant
- *   This is the number of encoder counts the encoder measures when the robot goes one inch
+ *@author Alex Miller <amm@albion.edu>
+ *@since 2015-02-03
  */
-/*void go(float inches) 
-{
-        vexMotorSet(motFrontLeft, 96);
-        vexMotorSet(motBackLeft, 96);
-        vexMotorSet(motFrontRight, 96);
-        vexMotorSet(motBackRight, 96);
 
-    while(vexMotorPositionGet(motBackRight) < inches * driveConstant || vexMotorPositionGet(motBackRight) > -inches * driveConstant)    
-    {
-        vexSleep( 25 );
-        if (vexControllerGet(Btn8D) == 1) 
-        {
-        stopMotors();
-        }
-    }
-
-
-        vexMotorSet(motFrontLeft, 0);
-        vexMotorSet(motBackLeft, 0);
-        vexMotorSet(motFrontRight, 0);
-        vexMotorSet(motBackRight, 0);
-
-    vexMotorPositionSet(motFrontRight, 0);
-}
-*/
 bool escapeTime(void)
 {
+
     if ((vexControllerGet(Btn7U) == 1) &&
         (vexControllerGet(Btn7D) == 1) &&
         (vexControllerGet(Btn8D) == 1) &&
         (vexControllerGet(Btn5U) == 1) &&
         (vexControllerGet(Btn6U) == 1))
-        {
-        vexLcdPrintf(1,1, "%s","Die!!!!!!!");
+    {
         return true;
-        }
-    else{ 
+    }
+    else
+	{
         return false;
-}
+	}
 }
 
 /**
+ *This function sets all base motors to 0.
  *
- *This code controls the LCD screen.
- *@author Alex Miller
+ *@author Alex Miller <amm@albion.edu>
+ *@since 2015-01-29
  */
-void vexLcdCode(void)
+
+void stopBase(void)
 {
-    if (print == -1)
-    {
-        print = 0;
-    }
-    else if(print == 0)
-    {
-        vexLcdPrintf(1,1, "%s%d","Button: ",vexDigitalPinGet(limitSwitch));
-    }
-    else if (print == 1)
-    {
-        vexLcdPrintf(1,1, "%s%d","motLiftOne: ",vexMotorPositionGet(motLiftOne));
-    }
-    else if (print == 2)
-    {
-        vexLcdPrintf(1,1, "%s%d","motFrontLeft: ",vexMotorPositionGet(motFrontLeft));
-    }
-    else if (print == 3)
-    {
-        vexLcdPrintf(1,1, "%s%d","Sonar: ", vexSonarGetCm(sonarLeft));
-        vexLcdPrintf(1,0, "%s%d","Sonar2: ", vexSonarGetCm(sonarRight));
-    }
-    else if (print == 4)
-    {
-        print = 0;
-    }
+    vexMotorSet(MOT_FRONT_LEFT, 0);
+    vexMotorSet(MOT_BACK_LEFT, 0);
+    vexMotorSet(MOT_FRONT_RIGHT, 0);
+    vexMotorSet(MOT_BACK_RIGHT, 0);
+}
 
+/**
+ *This function sets all the lift motors to a certain speed.  Used in raiseLift and 
+ *lowerLift functions, as well as the vexLiftThread task.
+ *
+ *@author Alex Miller <amm@albion.edu>
+ *@since 2015-02-03
+ *
+ *@param[in] power
+ *   The power to set all of the lift motors to.
+ */
 
-    if (vexLcdButtonGet(1) == kLcdButtonLeft) 
-    {
-        if(!shift)
-        {
-            print += 1;
-        }
-        shift = true;
-    }
-    else if (vexLcdButtonGet(1) == kLcdButtonRight) 
-    {
-        if(!shift)
-        {
-            print -= 1;
-        }
-        shift = true;
-    }
-    else {shift = false;}
+void liftMotorSet(int power)
+{
+    vexMotorSet(MOT_LIFT_ONE,   power);
+    vexMotorSet(MOT_LIFT_TWO,   power);
+    vexMotorSet(MOT_LIFT_THREE, power);
+    vexMotorSet(MOT_LIFT_FOUR,  power);
 }
     
 /**
- *This function also moves the robot forward.
+ *This function moves the robot forward or backward using PID.
  *
+ *@author Alex Miller <amm@albion.edu>
  *@author Annelise Comai <anneliesecomai@gmail.com>
  *@since 2014-12-24
  *
  *@param[in] inches
- *  This is the number of inches the robot is supposed to move forward
- *@param driveConstant
- *   This is the number of encoder counts the encoder measures when the robot goes one inch
+ *  The number of inches the robot should move forward or backward
  */
 
-void driveForward(float inches)
+void autonDrive(float inches)
 {
-    vexMotorPositionSet(motBackRight, 0);
-    while((vexMotorPositionGet(motBackRight) < inches * 14 / 16 * driveConstant) && !(escapeTime()) )
+	//Zeroing the encoders prevent prior movement from interfering.	
+    vexMotorPositionSet(MOT_BACK_RIGHT, 0);
+    vexMotorPositionSet(MOT_BACK_LEFT, 0);
+
+	const float pValue = 0.55;                              //These values converts the error into workable units
+	const float iValue = 0.9; 
+	const float dValue = 3;
+	float error, speed,iError = 0;                          //variable delarations
+	float wasHere = 0;
+
+	int i = 1;                                              //i is the number of times the drive has been in position/number 
+                                                            //of times the robot has hit the correct location
+	bool hitTarget = false;		                            //true or false depending on if robot has hit target destination
+	float targetDistance = abs(DRIVE_CONSTANT * inches);	//converts inches into encoder counts
+	int rightEncoder; 						               	//declares right and left encoders
+	
+	
+    while(!hitTarget && !(escapeTime()) )	//while robot has not hit target and kill switch is not activated
     {
-        vexMotorSet(motFrontLeft, -127);
-        vexMotorSet(motBackLeft, -127);
-        vexMotorSet(motFrontRight, -127);
-        vexMotorSet(motBackRight, -127);
-        vexLcdCode();
-        
+
+		rightEncoder = abs(vexMotorPositionGet(MOT_BACK_RIGHT) + 1); 
+		error = targetDistance - rightEncoder;				//How far off the right encoder's count is from the
+                											//targetDistance count
+		double dError = rightEncoder - wasHere;
+		speed = error * pValue + iError * iValue + dError *dValue;
+
+		if (abs(speed) <= 123) iError += error *0.025;		//iError is the area under error curve (the "current"
+		else speed = 123;
+
+		speed *= signOf(inches);							//If desired number of inches is negative, then speed
+															//of motors will be (-) for going backward
+
+		//Setting Motors (With Corrections for Straightening)
+        motorSet(MOT_FRONT_LEFT, speed + 4 );
+        motorSet(MOT_BACK_LEFT,  speed + 4 );
+        motorSet(MOT_FRONT_RIGHT,speed + 4 );
+        motorSet(MOT_BACK_RIGHT, speed + 4 );
+
+		if(rightEncoder <=  targetDistance + 6 && rightEncoder >= targetDistance -6){	
+			i += 1;											//Each time it hits target, 1 is added to i
+			if (i > 4) hitTarget = true;					
+		}
+		else i = 1;											//If robot does not hit target 7 times in a row, i goes
+
+		wasHere = rightEncoder;
+		vexSleep(25);
     }
-        vexMotorSet(motFrontLeft, 0);
-        vexMotorSet(motBackLeft, 0);
-        vexMotorSet(motFrontRight, 0);
-        vexMotorSet(motBackRight, 0);
-    vexMotorPositionSet(motBackRight, 0);
+
+	stopBase();												//Stops base after target is reached
 }
-
-
-void driveBackward(float inches)
-{
-    vexMotorPositionSet(motBackRight, 0);
-    while((vexMotorPositionGet(motBackRight) > inches * 14 / 16 * -driveConstant) && !(escapeTime()))
-    {
-        vexMotorSet(motFrontLeft, 127);
-        vexMotorSet(motBackLeft, 127);
-        vexMotorSet(motFrontRight, 127);
-        vexMotorSet(motBackRight, 127);
-        vexLcdCode();
-        
-    }
-        vexMotorSet(motFrontLeft, 0);
-        vexMotorSet(motBackLeft, 0);
-        vexMotorSet(motFrontRight, 0);
-        vexMotorSet(motBackRight, 0);
-    vexMotorPositionSet(motBackRight, 0);
-}
-
-
 
 /**
- *This function does a point turn to the left. A point
- *turn keeps the robot in one place while it turns.
+ *This basic function makes the robot go forward without PID.
  *
  *@author Annelise Comai <anneliesecomai@gmail.com>
- *@since 2014-12-21
+ *@since 2015-02-20
+ *
+ *@param[in] inch
+ *   The number of inches the robot should move forward or backward
  */
-void pointTurnRight(float degrees)    
+
+void goForward(float inch)
 {
-    vexMotorPositionSet(motBackRight, 0);
-    while((vexMotorPositionGet(motBackRight) > turnConstant * degrees / 90) && !(escapeTime()) )    
+    //Reset Encoder
+    vexMotorPositionSet(MOT_BACK_LEFT, 0);
+    
+    //Set speed
+    int direction = signOf(inch);
+    int speed = 60 * direction;
+
+    while(abs(vexMotorPositionGet(MOT_BACK_LEFT)) < abs(inch) )  // * DRIVE_CONSTANT)
     {
-        vexMotorSet(motFrontLeft, -127);
-        vexMotorSet(motBackLeft, -127);
-        vexMotorSet(motFrontRight, 127);
-        vexMotorSet(motBackRight, 127);
+        vexMotorSet(MOT_BACK_RIGHT,   speed);   
+        vexMotorSet(MOT_FRONT_RIGHT,  speed);   
+        vexMotorSet(MOT_BACK_LEFT,    speed);   
+        vexMotorSet(MOT_FRONT_LEFT,   speed);   
     }
-    vexMotorPositionSet(motBackRight, 0);
+
+    vexMotorPositionSet(MOT_BACK_RIGHT, 0);
 }
 
 /**
- *This function does a point turn to the right. A point
+ *This function caps off the integral error so that the error will never be more than maxValue,
+ *preventing robot from trying to compensate for impossible amounts of error
+ *
+ *@author Alex Miller <amm@albion.edu>
+ *@since 2015-02-10
+ *
+ *@param[in] rotation
+ *   The amount of rotation the robot should turn
+ */
+
+void pointTurnRight(float rotation)
+{
+    //Reset Encoder
+    vexMotorPositionSet(MOT_BACK_LEFT, 0);
+
+    //Set speed
+    int direction = signOf(rotation);
+    int speed = 96 * direction;
+
+    //Turn until point reached
+    while((abs(vexMotorPositionGet(MOT_BACK_LEFT)) < abs(rotation)) && !(escapeTime()) )  
+    {
+        vexMotorSet(MOT_FRONT_LEFT,  speed);
+        vexMotorSet(MOT_BACK_LEFT,   speed);
+        vexMotorSet(MOT_FRONT_RIGHT, -speed);
+        vexMotorSet(MOT_BACK_RIGHT,  -speed);
+    }
+}
+
+/**
+ *This function does a point turn to the right. A point turn keeps the robot in 
+ *one place while it turns.
+ *
+ *@author Alex Miller <amm@albion.edu>
+ *@since 2015-02-12
+ *
+ *@param[in] degrees
+ *  Approximates the degrees turned by the robot
+ */
+
+void pointTurnRightAuton(float degrees)    
+{
+    vexMotorPositionSet(MOT_BACK_RIGHT, 0);				//Resets MOT_BACK_RIGHT encoder
+
+	
+	float targetTurn = TURN_CONSTANT * degrees / 90;
+	float error = targetTurn - abs(vexMotorPositionGet(MOT_BACK_RIGHT));
+	float pValue = 0.6;
+    float dir = signOf(degrees);
+
+    while((abs(vexMotorPositionGet(MOT_BACK_RIGHT)) > abs(targetTurn)) && !(escapeTime()) )    
+    {
+        //int dir = degrees/abs(degrees);
+        vexMotorSet(MOT_FRONT_LEFT, pValue * error * dir);
+        vexMotorSet(MOT_BACK_LEFT, pValue * error * dir);
+        vexMotorSet(MOT_FRONT_RIGHT, -pValue * error * dir);
+        vexMotorSet(MOT_BACK_RIGHT, -pValue * error * dir);
+    }
+
+    vexMotorPositionSet(MOT_BACK_RIGHT, 0);
+}
+
+/**
+ *This function will perform a point turn to either the left or right. A point
  *turn keeps the robot in one place while it turns.
  *
- *@author Annelise Comai <anneliesecomai@gmail.com>
- *@since 2014-12-21
+ *@author Alex Miller <amm@albion.edu>
+ *@since 2015-02-12
+ *
+ *param[in] inches
+ *  Approximates the distance turned in inches
  */
-void pointTurnLeft(float degrees)   
+
+void autonTurn(float inches)
 {
-    vexMotorPositionSet(motBackRight, 0);
-    while((vexMotorPositionGet(motBackRight) < turnConstantLeft * degrees / 90) && !(escapeTime()) )
+	//Zeroing the encoders prevent prior movement from interfering.	
+    vexMotorPositionSet(MOT_BACK_RIGHT, 0);
+    vexMotorPositionSet(MOT_BACK_LEFT, 0);
+
+	const float pValue = 0.55;                 //These values converts the error into workable units
+	const float iValue = 0.9; 
+	const float dValue = 3;
+	float error, speed, iError = 0;             //variable delarations
+	float wasHere = 0;
+
+	int i = 1;                                 //i is the number of times the drive has been in position/number of 
+                                               //times the robot has hit the correct location
+	bool hitTarget = false;		               //true or false depending on if robot has hit target destination
+	float targetDistance = abs(inches);	       //converts inches into encoder counts
+	int  rightEncoder; 						   //declares right and left encoders
+	
+	
+    while(!hitTarget && !(escapeTime()) )	   //while robot has not hit target and kill switch is not activated
     {
-        vexMotorSet(motFrontLeft, 127);
-        vexMotorSet(motBackLeft, 127);
-        vexMotorSet(motFrontRight, -127);
-        vexMotorSet(motBackRight, -127);
+
+		rightEncoder = abs(vexMotorPositionGet(MOT_BACK_RIGHT) + 1); 
+		error = targetDistance - rightEncoder;				//How far off the right encoder's count is from the
+															//targetDistance count
+		double dError = rightEncoder - wasHere;
+		speed = error * pValue + iError * iValue + dError *dValue + 4;
+
+		if (abs(speed) <= 123) iError += error *0.02;		//iError is the area under error curve (the "current"
+		else speed = 123;
+
+		speed *= signOf(inches);							//If desired number of inches is negative, then speed
+															//of motors will be (-) for going backward
+		
+		//Setting Motors (With Corrections for Straightening)
+        motorSet(MOT_FRONT_LEFT,  speed  );
+        motorSet(MOT_BACK_LEFT,   speed  );
+        motorSet(MOT_FRONT_RIGHT,-speed  );
+        motorSet(MOT_BACK_RIGHT, -speed  );
+
+		if(rightEncoder <=  targetDistance + 4  && rightEncoder >= targetDistance -4)
+        {	
+			i += 1;											//Each time it hits target, 1 is added to i
+			if (i > 4) hitTarget = true;					
+		}
+		else i = 1;											//If robot does not hit target 7 times in a row, i goes
+
+		wasHere = rightEncoder;
+		vexSleep(20);
     }
-    vexMotorPositionSet(motBackRight, 0);
+	stopBase();												//Stops base after target is reached
 }
 
 /**
- *This opens the claw when called. 
- *@since 2014-12-21
+ *This function sets the lift position while the vexClawThread is running.
+ *
+ *@author Alex Miller <amm@albion.edu>
+ *@since 2015-2-19
+ *
+ *@param[in] spot
+ *  The desired location of the lift
  */
+
+void autonLift(float spot)
+{
+	//while(liftSetpoint != 0 && !escapeTime()){ //Until the lift isn't running wait
+	//vexSleep(25);
+	//} 
+	liftSetpoint = spot;
+}
+
+/**
+ *This function makes the thread sleep for a period of time.
+ *
+ *@author Alex Miller <amm@albion.edu>
+ *@since 2014-12-21
+ *
+ *@param[in] time
+ *  Amount of time in milliseconds the thread should sleep
+ */
+
  void wait(float time)
  {
     chThdSleepMilliseconds(time);
  }
+
+/**
+ *This opens the claw when called using a wait statement.
+ *
+ *@author Alex Miller <amm@albion.edu>
+ *@since 2014-12-21
+ *
+ */
  
 void openClaw(void) 
 {
-    vexMotorSet(motClaw, 127);
-    wait(250);
-    vexMotorSet(motClaw, 0);
+    vexMotorSet(MOT_CLAW, 127);
+    wait(300);
+    vexMotorSet(MOT_CLAW, 0);
 }
 
 /**
- *This closes the claw when called. 
- *@since 2014-12-21
- */
+*This closes the claw when called using a wait statement. 
+*
+*@author Alex Miller <amm@albion.edu>
+*@since 2014-12-21
+*
+*/
+
 void closeClaw(void)    
 {
-    vexMotorSet(motClaw, -96);
+    vexMotorSet(MOT_CLAW, -96);
     wait(250);
-    vexMotorSet(motClaw, 0);
+    vexMotorSet(MOT_CLAW, 0);
 }
-
-
 
 /**
  *This function will somehow raise the lift.
@@ -419,24 +527,19 @@ void closeClaw(void)
  *@author Annelise Comai <anneliesecomai@gmail.com>
  *@since 2014-12-29
  *
- *@param[in] middle
- *   Set to 1 if lift is passing through or landing at the middle lift position
  *@param[in] high
  *   Set to 1 if lift is landing at the high lift position
- *
  */
 
-void raiseLift(int middle, int high)
+void raiseLift(float high)
 {
-    vexMotorPositionSet(motLiftOne, 0);
-    while((vexMotorPositionGet(motLiftOne) < liftConstant * (middle + high)) && !(escapeTime()) )
+    vexMotorPositionSet(MOT_LIFT_ONE, 0);
+    while((abs(vexMotorPositionGet(MOT_LIFT_ONE)) < abs(LIFT_CONSTANT * (high))) && !(escapeTime()) )
     {
-        vexMotorSet(motLiftOne,   96);
-        vexMotorSet(motLiftTwo,   96);
-        vexMotorSet(motLiftThree, 96);
-        vexMotorSet(motLiftFour,  96);
+		liftMotorSet(127);
     }
-    vexMotorPositionSet(motLiftOne, 0);
+
+	liftMotorSet(0);
 }
 
 /**
