@@ -150,12 +150,25 @@ void motorSet(int motor,int power)
 	vexMotorSet(motor,signOf(power) * TRUESPEED[abs(power) - 1]);
 }
 
-//Function caps off the integral error so that the error will never be more than maxValue - prevents robot from
-//trying to compensate for impossible amounts of error
+/**
+ *This function caps off the integral error so that the error will never be more than maxValue,
+ *preventing robot from trying to compensate for impossible amounts of error
+ *
+ *@author Alex Miller <amm@albion.edu>
+ *@since 2015-02-10
+ *
+ *@param[in] value
+ *   The current, unadjusted error value
+ *@param[in] maxValue
+ *   The maximum value that the error will never go over
+ */
+
 float cap(float value, float maxValue){
 	if (abs(value) > abs(maxValue)) return signOf(value) * abs(maxValue);
 	else return value;
 }
+
+
 
 /**
  * @file vexuser.c
