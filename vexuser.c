@@ -607,12 +607,13 @@ void strafe(float inch)
  *@param[in] ch4
  *  Controls rotation around the z-axis. 
  */
+
 void moveFunc(int ch1, int ch2, int ch4) 
 {
-    vexMotorSet(motBackRight,   ch1 - ch2 + ch4);   
-    vexMotorSet(motFrontRight, -ch1 - ch2 + ch4);   
-    vexMotorSet(motBackLeft,   -ch1 - ch2 - ch4);   
-    vexMotorSet(motFrontLeft,   ch1 - ch2 - ch4);   
+    motorSet(MOT_BACK_RIGHT,  -ch1 + ch2 - ch4);   
+    motorSet(MOT_FRONT_RIGHT,  ch1 + ch2 - ch4);   
+    motorSet(MOT_BACK_LEFT,    ch1 + ch2 + ch4);   
+    motorSet(MOT_FRONT_LEFT,  -ch1 + ch2 + ch4);   
 }
 
 /**
@@ -621,23 +622,24 @@ void moveFunc(int ch1, int ch2, int ch4)
  *@author Annelise Comai <anneliesecomai@gmail.com>
  *@since 2014-12-21
  */
+
 void stopMotors(void)   
 {
-    vexMotorSet(motClaw, 0);
-    vexMotorSet(motFrontRight, 0);
-    vexMotorSet(motBackRight, 0);
-    vexMotorSet(motFrontLeft, 0);
-    vexMotorSet(motFrontRight, 0);
-    vexMotorSet(motLiftOne, 0);
-    vexMotorSet(motLiftTwo, 0);
-    vexMotorSet(motLiftThree, 0);
-    vexMotorSet(motLiftFour, 0);
+    vexMotorSet(MOT_CLAW, 0);
+    vexMotorSet(MOT_FRONT_RIGHT, 0);
+    vexMotorSet(MOT_BACK_RIGHT, 0);
+    vexMotorSet(MOT_FRONT_LEFT, 0);
+    vexMotorSet(MOT_FRONT_RIGHT, 0);
+    vexMotorSet(MOT_LIFT_ONE, 0);
+    vexMotorSet(MOT_LIFT_TWO, 0);
+    vexMotorSet(MOT_LIFT_THREE, 0);
+    vexMotorSet(MOT_LIFT_FOUR, 0);
 }
 
 /**
  *This controls the raising and lowering of the chain lift. 
  *
- *@author Alex Miller <alexmiller965@gmail.com>
+ *@author Alex Miller <amm@albion.edu>
  *@since 2014-12-29
  *
  *@param[in] raises 
