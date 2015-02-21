@@ -108,15 +108,37 @@ const unsigned int TRUESPEED[128] = {
 	80,81,83,84,84,86,86,87,87,88,
 	88,89,89,90,127,127,127
 };
+
 // Important Utility Functions
 
-//Returns the sign of a value
+/**
+ *This function returns the sign of any value.
+ *
+ *@author Alex Miller <amm@albion.edu>
+ *@since 2015-02-10
+ *
+ *@param[in] value
+ *   The value from which the sign will be taken
+ */
+
 int signOf(int value)
 {
 	if (value >= 0) return 1;
 	else return -1;
 }
-//Takes the motor input and linearizes it
+
+/**
+ *This function takes the motor input and linearizes it according to the TRUESPEED look up table
+ *
+ *@author Alex Miller <amm@albion.edu>
+ *@since 2015-02-10
+ *
+ *@param[in] motor
+ *   The function will set this motor to the power.
+ *@param[in] power
+ *   The linearized power to set the motor to.
+ */
+
 void motorSet(int motor,int power)
 {
 	//makes sure that the motors are never being set to more or less than +-127
