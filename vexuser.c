@@ -85,14 +85,16 @@ static  vexMotorCfg mConfig[kVexMotorNum] = {
 
 // Autonmous Constants for unit conversion.
 const int DRIVE_CONSTANT = 39.5;   //Encoder to inch
-const int TURN_CONSTANT = -675;    //Encoder to degree
+const int TURN_CONSTANT = 675;     //Encoder to degree
 const int LIFT_CONSTANT = 300;     //Encoder to pseudounits
 
+bool clawOpen = false;
+float liftSetpoint = 0;
 
 // Look Up Table for Motor Values
 // Used for the purpose of linearzing motor speed.
 const unsigned int TRUESPEED[128] = {
-	0, 0, 0, 0, 0, 0, 0, 0, 19,20,
+	0, 0, 0, 0, 0, 15,16,17,18,19,
 	20,21,21,21,22,22,22,23,24,24,
 	25,25,25,25,26,27,27,28,28,28,
 	28,29,30,30,30,31,31,32,32,32,
