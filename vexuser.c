@@ -548,41 +548,27 @@ void raiseLift(float high)
  *@author Annelise Comai <anneliesecomai@gmail.com>
  *@since 2014-12-29
  *
- *@param[in] middle
- *   Set to 1 if lift is passing through or landing at the middle lift position, not if lift is currently at middle position
  *@param[in] low
  *   Set to 1 if lift is landing at the low lift position
- *
  */
 
-void lowerLift(int middle, int low)
+void lowerLift(float low)
 {
-    vexMotorPositionSet(motLiftOne, 0);
-    while((vexMotorPositionGet(motLiftOne) > -1 * (10 + liftConstant) * (middle + low)) && !(escapeTime()) )
+    vexMotorPositionSet(MOT_LIFT_ONE, 0);
+
+    while((vexMotorPositionGet(MOT_LIFT_ONE) > LIFT_CONSTANT * -low) && !escapeTime()) 
     {
-        vexMotorSet(motLiftOne,   -127);
-        vexMotorSet(motLiftTwo,   -127);
-        vexMotorSet(motLiftThree, -127);
-        vexMotorSet(motLiftFour,  -127);
+	   liftMotorSet(-127);
     }
-    vexMotorPositionSet(motLiftOne, 0);
-}
-void lowerLiftEasy(void)
-    {
-    while(!(vexDigitalPinGet(limitSwitch) == 0) && !(escapeTime()) )
-    {
-        vexMotorSet(motLiftOne,   -127);
-        vexMotorSet(motLiftTwo,   -127);
-        vexMotorSet(motLiftThree, -127);
-        vexMotorSet(motLiftFour,  -127);
-    }
+
+	liftMotorSet(0);
 }
 
 /**
  *This function will move the robot sideways to the left.
  *
  *@author Annelise Comai <anneliesecomai@gmail.com>
- *@since 2015-1-17
+ *@since 2015-01-17
  *
  *@param[in] inch
  *   number of inches left the robot should move.
