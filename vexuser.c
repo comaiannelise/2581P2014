@@ -576,28 +576,28 @@ void lowerLift(float low)
 
 void strafe(float inch)
 {
-    vexMotorPositionSet(motBackRight, 0);
-    while(vexMotorPositionGet(motBackRight) < inch * 14 / 16 * driveConstant)
+    vexMotorPositionSet(MOT_BACK_RIGHT, 0);
+	
+    while(vexMotorPositionGet(MOT_BACK_RIGHT) < inch * 14 / 16 * DRIVE_CONSTANT)
     {
-        vexMotorSet(motBackRight,   127);   
-        vexMotorSet(motFrontRight, -127);   
-        vexMotorSet(motBackLeft,   -127);   
-        vexMotorSet(motFrontLeft,   127);   
+        vexMotorSet(MOT_BACK_RIGHT,  -127);   
+        vexMotorSet(MOT_FRONT_RIGHT,  127);   
+        vexMotorSet(MOT_BACK_LEFT,    127);   
+        vexMotorSet(MOT_FRONT_LEFT,  -127);   
     }
-    vexMotorPositionSet(motBackRight, 0);
+
+    vexMotorPositionSet(MOT_BACK_RIGHT, 0);
 }
 
-
-
-
-//Driver Period Functions
-
+//////////////////////////////////////////////
+//Driver Period Functions					//
+//////////////////////////////////////////////
 
 
 /**
  *This function uses analog joysticks to drive the robot. 
  *
- *@author Alex Miller <alexmiller965@gmail.com>
+ *@author Alex Miller <amm@albion.edu>
  *@since 2014-12-21
  *
  *@param[in] ch1 
