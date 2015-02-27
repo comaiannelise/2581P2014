@@ -254,8 +254,8 @@ void autonDrive(float inches)
     vexMotorPositionSet(MOT_BACK_RIGHT, 0);
     vexMotorPositionSet(MOT_BACK_LEFT, 0);
 
-	const float pValue = 0.55;                              //These values converts the error into workable units
-	const float iValue = 0.9; 
+	const float pValue = 0.35;                              //These values converts the error into workable units
+	const float iValue = 0.3; 
 	const float dValue = 3;
 	float error, speed,iError = 0;                          //variable delarations
 	float wasHere = 0;
