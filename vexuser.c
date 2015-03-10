@@ -238,6 +238,8 @@ void liftMotorSet(int power)
     vexMotorSet(MOT_LIFT_TWO,   power);
     vexMotorSet(MOT_LIFT_THREE, power);
     vexMotorSet(MOT_LIFT_FOUR,  power);
+    vexMotorSet(MOT_LIFT_FIVE,  power);
+    vexMotorSet(MOT_LIFT_SIX,   power);
 }
     
 /**
