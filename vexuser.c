@@ -1033,16 +1033,16 @@ vexOperator( void *arg )
         //Other Movement
         liftControl(    vexControllerGet(Btn5U),        //Lifts the chain lift
                         vexControllerGet(Btn5D) );      //Lowers the chain lift
-
+/*
         liftControlClaw(vexControllerGet(Btn6D),		//Lifts the claw lift
                         vexControllerGet(Btn6U));		//Lowers the claw lift
-        
+        */
 		if (vexControllerGet(Btn7U))                    //Resets lift encoder
         	vexMotorPositionSet(MOT_LIFT_ONE,0);
 			
         // clawControl(  	vexControllerGet(Btn8R),    //Opens the claw
         //                  vexControllerGet(Btn8L) );  //Closes the claw
-	   
+	
 		//Official Auton Testing Button: Btn8U
         if (vexControllerGet(Btn8U) == 1)  
         {
