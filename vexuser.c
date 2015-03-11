@@ -505,14 +505,14 @@ void autonLift(float spot)
  *@since 2014-12-21
  *
  */
- 
+ /*
 void openClaw(void) 
 {
     vexMotorSet(MOT_CLAW, 127);
     wait(300);
     vexMotorSet(MOT_CLAW, 0);
 }
-
+*/
 /**
 *This closes the claw when called using a wait statement. 
 *
