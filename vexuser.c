@@ -452,7 +452,7 @@ void autonTurn(float inches)
         motorSet(MOT_FRONT_RIGHT,-speed  );
         motorSet(MOT_BACK_RIGHT, -speed  );
 
-		if(rightEncoder <=  targetDistance + 4  && rightEncoder >= targetDistance -4)
+		if(rightEncoder <=  targetDistance + 8  && rightEncoder >= targetDistance -8)
         {	
 			i += 1;											//Each time it hits target, 1 is added to i
 			if (i > 4) hitTarget = true;					
