@@ -632,7 +632,7 @@ void moveFunc(int ch1, int ch2, int ch4)
 
 void stopMotors(void)   
 {
-    vexMotorSet(MOT_CLAW, 0);
+   // vexMotorSet(MOT_CLAW, 0);
     vexMotorSet(MOT_FRONT_RIGHT, 0);
     vexMotorSet(MOT_BACK_RIGHT, 0);
     vexMotorSet(MOT_FRONT_LEFT, 0);
@@ -674,12 +674,12 @@ void liftControl(int raises, int lower)
 *@param[in] low
 *	Lowers the claw lift while assigned button is pressed
 */
-
+/*
 void liftControlClaw(int raise, int low) 
 {
     vexMotorSet(MOT_CLAW_LIFT, 127 * (raise - low));
 }
-
+*/
 /**
  *This function controls the opening and closing of the claw.  Due to the addition of the new claw servo, this
  *function is now obsolete.
@@ -692,12 +692,12 @@ void liftControlClaw(int raise, int low)
  *@param[in] close
  *  Closes the claw when button is pressed
  */
- 
+ /*
 void clawControl(int open,int close)
 {
 	vexMotorSet(MOT_CLAW, 127 * (open - close));
 }
-
+*/
 /**
  *This task operates the LCD screen, displaying various sensor values.
  *
@@ -785,7 +785,7 @@ int print = 0;
  *@author Alex Miller <amm@albion.edu>
  *@since 2015-12-02
  */
-
+/*
 task vexClawThread(void *arg)
 {
     (void)arg;
@@ -828,7 +828,7 @@ task vexClawThread(void *arg)
 
     return (msg_t)0;
 }
-
+*/
 /**
  *This task controls the lift. 
  *
