@@ -333,7 +333,6 @@ void goForward(float inch)
         vexMotorSet(MOT_FRONT_LEFT,   speed);   
     }
 
-    vexMotorPositionSet(MOT_BACK_RIGHT, 0);
 }
 
 /**
