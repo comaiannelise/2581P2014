@@ -325,14 +325,17 @@ void goForward(float inch)
     int direction = signOf(inch);
     int speed = 60 * direction;
 
-    while(abs(vexMotorPositionGet(MOT_BACK_LEFT)) < abs(inch) )  // * DRIVE_CONSTANT)
+    while(abs(vexMotorPositionGet(MOT_BACK_LEFT)) < abs(inch) && !escapeTime() )  // * DRIVE_CONSTANT)
     {
         vexMotorSet(MOT_BACK_RIGHT,   speed);   
         vexMotorSet(MOT_FRONT_RIGHT,  speed);   
         vexMotorSet(MOT_BACK_LEFT,    speed);   
         vexMotorSet(MOT_FRONT_LEFT,   speed);   
     }
-
+        vexMotorSet(MOT_BACK_RIGHT,   0);   
+        vexMotorSet(MOT_FRONT_RIGHT,  0);   
+        vexMotorSet(MOT_BACK_LEFT,    0);   
+        vexMotorSet(MOT_FRONT_LEFT,   0);   
 }
 
 /**
