@@ -1018,8 +1018,7 @@ vexOperator( void *arg )
     vexMotorPositionSet(MOT_FRONT_LEFT, 0);
     vexMotorPositionSet(MOT_LIFT_ONE, 0);
 
-    vexSonarStartAll();
-	StartTask(vexClawThread);
+//	StartTask(vexClawThread);
     StartTask(vexLcdThread);
 
     // Run until asked to terminate
