@@ -41,6 +41,10 @@
 //#define MOT_CLAW             kVexMotor_8      //old claw motor port
 //#define MOT_CLAW_LIFT        kVexMotor_9
 
+//Claw Pneumatic Pistons
+#define PISTON_LEFT         kVexDigital_4
+#define PISTON_RIGHT        kVexDigital_5
+
 // Autonmous Jumpers
 #define JUMPER_ONE        kVexDigital_7
 #define JUMPER_TWO        kVexDigital_8
