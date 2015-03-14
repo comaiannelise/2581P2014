@@ -792,12 +792,16 @@ task pneuClawThread (void *arg)
                                     //start of match
         while(1)
             {
-                if(clawOpen == true)
+                if (clawOpen == true)
                 {
                     vexDigitalPinSet(PISTON_LEFT, kVexDigitalHigh);
                     vexDigitalPinSet(PISTON_RIGHT, kVexDigitalHigh);
                 }
-               
+                else if (clawOpen == false)
+                {
+                    vexDigitalPinSet(PISTON_LEFT, kVexDigitalLow);
+                    vexDigitalPinSet(PISTON_RIGHT, kVexDigitalLow);
+                }
             }
     }
 }
