@@ -779,6 +779,24 @@ int print = 0;
     return (msg_t)0;
 }
 
+task pneuClawThread (void *arg)
+{
+    (void)arg;
+    vexTaskRegister("claw")
+    {
+        bool clawOpen = true;       //This assumes that claw will have to be open at
+                                    //start of match
+        while(1)
+            {
+                if(clawOpen == true)
+                {
+                    vexDigitalPinSet( , kVexDigitalHigh)
+                }
+            }
+    }
+}
+
+
 /**
  *This task operates the servo motor that opens and closes the claw.
  *
