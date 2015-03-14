@@ -91,7 +91,7 @@ const int DRIVE_CONSTANT = 39.5;   //Encoder to inch
 const int TURN_CONSTANT = 675;     //Encoder to degree
 const int LIFT_CONSTANT = 300;     //Encoder to pseudounits
 
-bool clawOpen = false;
+bool clawOpen = true;
 float liftSetpoint = 0;
 
 // Look Up Table for Motor Values
