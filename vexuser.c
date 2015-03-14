@@ -794,8 +794,10 @@ task pneuClawThread (void *arg)
             {
                 if(clawOpen == true)
                 {
-                    vexDigitalPinSet( , kVexDigitalHigh)
+                    vexDigitalPinSet(PISTON_LEFT, kVexDigitalHigh);
+                    vexDigitalPinSet(PISTON_RIGHT, kVexDigitalHigh);
                 }
+               
             }
     }
 }
