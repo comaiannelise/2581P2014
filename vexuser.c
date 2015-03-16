@@ -41,6 +41,10 @@
 //#define MOT_CLAW             kVexMotor_8      //old claw motor port
 //#define MOT_CLAW_LIFT        kVexMotor_9
 
+//Claw Pneumatic Pistons
+#define PISTON_LEFT         kVexDigital_4
+#define PISTON_RIGHT        kVexDigital_5
+
 // Autonmous Jumpers
 #define JUMPER_ONE        kVexDigital_7
 #define JUMPER_TWO        kVexDigital_8
@@ -91,7 +95,7 @@ const int DRIVE_CONSTANT = 39.5;   //Encoder to inch
 const int TURN_CONSTANT = 675;     //Encoder to degree
 const int LIFT_CONSTANT = 300;     //Encoder to pseudounits
 
-bool clawOpen = false;
+bool clawOpen = true;
 float liftSetpoint = 0;
 
 // Look Up Table for Motor Values
@@ -778,6 +782,62 @@ int print = 0;
 
     return (msg_t)0;
 }
+
+/**
+ *This task operates the pneumatic claw.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2015-3-15
+ *
+*/
+
+task pneuClawThread (void *arg)
+{
+    (void)arg;
+    vexTaskRegister("claw");
+    {
+        bool clawOpen = true;       //This assumes that claw will be open at start of match
+        bool toggle = false;        //
+
+        while(1)
+            {
+                if (vexControllerGet(Btn8R) && clawOpen)        //If Btn8R is pressed and the claw is open
+                {
+                    if(!toggle)
+                    {
+                        clawOpen = false;                   
+                    }
+                    toggle = true;
+                }
+                else if (vexControllerGet(Btn8R) && !clawOpen)  //If Btn8R is pressed and the claw is not open
+                {
+                    if(!toggle)
+                    {
+                       clawOpen = true;;
+                    }
+                    toggle = true;
+                }
+                else 
+                {
+                    toggle = false;
+                }
+
+                //Sets pistons based on claw position
+                if (clawOpen == true)
+                {
+                    vexDigitalPinSet(PISTON_LEFT,  kVexDigitalHigh);
+                    vexDigitalPinSet(PISTON_RIGHT, kVexDigitalHigh);
+                }
+                else if (clawOpen == false)
+                {
+                    vexDigitalPinSet(PISTON_LEFT,  kVexDigitalLow);
+                    vexDigitalPinSet(PISTON_RIGHT, kVexDigitalLow);
+                }
+                else {}
+            }
+    }
+}
+
 
 /**
  *This task operates the servo motor that opens and closes the claw.
