@@ -95,7 +95,7 @@ const int DRIVE_CONSTANT = 39.5;   //Encoder to inch
 const int TURN_CONSTANT = 675;     //Encoder to degree
 const int LIFT_CONSTANT = 300;     //Encoder to pseudounits
 
-bool clawOpen = true;
+bool  clawOpen = true;
 float liftSetpoint = 0;
 
 // Look Up Table for Motor Values
@@ -170,7 +170,8 @@ void motorSet(int motor,int power)
  *   The maximum value that the error will never go over
  */
 
-float cap(float value, float maxValue){
+float cap(float value, float maxValue)
+{
 	if (abs(value) > abs(maxValue)) return signOf(value) * abs(maxValue);
 	else return value;
 }
@@ -545,6 +546,7 @@ void closeClaw(void)
 void raiseLift(float high)
 {
     vexMotorPositionSet(MOT_LIFT_ONE, 0);
+
     while((abs(vexMotorPositionGet(MOT_LIFT_ONE)) < abs(LIFT_CONSTANT * (high))) && !(escapeTime()) )
     {
 		liftMotorSet(127);
@@ -715,40 +717,39 @@ task vexLcdThread(void *arg)
     (void)arg;
     vexTaskRegister("lcdout");
 
-bool shift = false;
-int print = 0;
+        bool shift = false;
+        int print = 0;
 
     while(1)
         {
         //This block sets the screen that is displayed
         if (vexLcdButtonGet(1) == kLcdButtonLeft) 
-            {
-        
+        {
             if(!shift)
-                {
+            {
                 print += 1;
-                }
-            shift = true;
-
             }
+            shift = true;
+        }
         else if (vexLcdButtonGet(1) == kLcdButtonRight) 
             {
-        
             if(!shift)
                 {
                 print -= 1;
                 }
             shift = true;
-
             }
-        else {shift = false;}
+        else 
+        {
+            shift = false;
+        }
 
     //Each level of print represents a screen that could be displayed.
 
         if (print == -1)
-            {
+        {
             print = 0;
-            }
+        }
 
     else if(print == 0)
     {
@@ -833,7 +834,9 @@ task pneuClawThread (void *arg)
                     vexDigitalPinSet(PISTON_LEFT,  kVexDigitalLow);
                     vexDigitalPinSet(PISTON_RIGHT, kVexDigitalLow);
                 }
-                else {}
+                else 
+                {
+                }
             }
     }
 }
@@ -908,8 +911,11 @@ task vexLiftThread(void *arg)
             {
                 liftMotorSet(127 * signOf(liftSetpoint));
                 vexSleep(25);
-                if(abs(vexMotorPositionGet(MOT_LIFT_ONE)) > abs(LIFT_CONSTANT * liftSetpoint))
-                    liftSetpoint = 0;
+                    if(abs(vexMotorPositionGet(MOT_LIFT_ONE)) > abs(LIFT_CONSTANT * liftSetpoint))
+                    {
+                        liftSetpoint = 0;
+                    }
+                        
             }
             wait1Msec(25);
             liftMotorSet(0);
