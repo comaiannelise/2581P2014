@@ -31,10 +31,10 @@
 #define MOT_BACK_LEFT       kVexMotor_7
 // Chain Lift Motors
 #define MOT_LIFT_ONE        kVexMotor_3      
-#define MOT_LIFT_TWO        kVexMotor_4
+#define MOT_LIFT_TWO        kVexMotor_4     //has to be reversed
 #define MOT_LIFT_THREE      kVexMotor_5
 #define MOT_LIFT_FOUR       kVexMotor_10
-#define MOT_LIFT_FIVE       kVexMotor_8
+#define MOT_LIFT_FIVE       kVexMotor_8     //has to be reversed
 #define MOT_LIFT_SIX        kVexMotor_9
 
 // Claw motor and the lift the claw is chained to.  Out of use as of 3/5/15
