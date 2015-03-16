@@ -786,22 +786,25 @@ int print = 0;
 task pneuClawThread (void *arg)
 {
     (void)arg;
-    vexTaskRegister("claw")
+    vexTaskRegister("claw");
     {
         bool clawOpen = true;       //This assumes that claw will have to be open at
                                     //start of match
+ 
+
         while(1)
             {
                 if (clawOpen == true)
                 {
-                    vexDigitalPinSet(PISTON_LEFT, kVexDigitalHigh);
+                    vexDigitalPinSet(PISTON_LEFT,  kVexDigitalHigh);
                     vexDigitalPinSet(PISTON_RIGHT, kVexDigitalHigh);
                 }
                 else if (clawOpen == false)
                 {
-                    vexDigitalPinSet(PISTON_LEFT, kVexDigitalLow);
+                    vexDigitalPinSet(PISTON_LEFT,  kVexDigitalLow);
                     vexDigitalPinSet(PISTON_RIGHT, kVexDigitalLow);
                 }
+                else {}
             }
     }
 }
