@@ -783,17 +783,46 @@ int print = 0;
     return (msg_t)0;
 }
 
+/**
+ *This task operates the pneumatic claw.
+ *
+ *@author Annelise Comai <anneliesecomai@gmail.com>
+ *@since 2015-3-15
+ *
+*/
+
 task pneuClawThread (void *arg)
 {
     (void)arg;
     vexTaskRegister("claw");
     {
-        bool clawOpen = true;       //This assumes that claw will have to be open at
-                                    //start of match
- 
+        bool clawOpen = true;       //This assumes that claw will be open at start of match
+        bool toggle = false;        //
 
         while(1)
             {
+                if (vexControllerGet(Btn8R) && clawOpen)        //If Btn8R is pressed and the claw is open
+                {
+                    if(!toggle)
+                    {
+                        clawOpen = false;                   
+                    }
+                    toggle = true;
+                }
+                else if (vexControllerGet(Btn8R) && !clawOpen)  //If Btn8R is pressed and the claw is not open
+                {
+                    if(!toggle)
+                    {
+                       clawOpen = true;;
+                    }
+                    toggle = true;
+                }
+                else 
+                {
+                    toggle = false;
+                }
+
+                //Sets pistons based on claw position
                 if (clawOpen == true)
                 {
                     vexDigitalPinSet(PISTON_LEFT,  kVexDigitalHigh);
