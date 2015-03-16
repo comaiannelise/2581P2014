@@ -524,14 +524,13 @@ void openClaw(void)
 *@since 2014-12-21
 *
 */
-/*
+
 void closeClaw(void)    
 {
-    vexMotorSet(MOT_CLAW, -96);
-    wait(250);
-    vexMotorSet(MOT_CLAW, 0);
+    vexDigitalPinSet(PISTON_LEFT,  kVexDigitalLow);
+    vexDigitalPinSet(PISTON_RIGHT, kVexDigitalLow);
 }
-*/
+
 /**
  *This function will somehow raise the lift.
  *
