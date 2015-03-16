@@ -961,7 +961,7 @@ msg_t vexAutonomous( void *arg )
     // Must call this
     vexTaskRegister("auton");
 
-        StartTask(vexClawThread);   //Starts the claw thread
+        StartTask(pneuClawThread);   //Starts the claw thread
         StartTask(vexLcdThread);    //Continues the LCD screen thread through auton
 
     if(vexDigitalPinGet(JUMPER_ONE) == 0)
