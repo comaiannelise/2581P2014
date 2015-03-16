@@ -344,8 +344,7 @@ void goForward(float inch)
 }
 
 /**
- *This function caps off the integral error so that the error will never be more than maxValue,
- *preventing robot from trying to compensate for impossible amounts of error
+ *This basic function makes the robot turn right or left.
  *
  *@author Alex Miller <amm@albion.edu>
  *@since 2015-02-10
