@@ -373,7 +373,7 @@ void pointTurnRight(float rotation)
 }
 
 /**
- *This function does a point turn to the right. A point turn keeps the robot in 
+ *This function does a point turn to the right using PID. A point turn keeps the robot in 
  *one place while it turns.
  *
  *@author Alex Miller <amm@albion.edu>
